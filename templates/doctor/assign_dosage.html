@@ -1,0 +1,381 @@
+{% from 'macros.html' import navBar %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> 
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <style>
+      * {
+        font-family: 'Roboto';
+      }
+      .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 95vw;
+        margin: auto;
+        text-align: center;
+        font-family: arial;
+      }
+      .title {
+        color: grey;
+        font-size: 18px;
+      }
+      button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+      }
+      a {
+        text-decoration: none;
+        font-size: 22px;
+        color: black;
+      }
+      table {
+        width: 100%;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      tr:nth-child(odd) {
+        background-color: #f2f2f2;
+      }
+      th {
+        background-color: #3952B7;
+        color: white;
+      }
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      li {
+        float: left;
+      }
+      li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      li a:hover {
+        background-color: #111;
+      }
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #333;
+        color: white;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Uses a transparent header that draws on top of the layout's background -->
+    <style>
+    .demo-layout-transparent {
+        height: 100vh!important;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+      color: grey;
+      position: sticky!important;
+      top: 0!important;
+    }
+    </style>
+    
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+      {{ navBar(user, menu) }}
+    </div>
+
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Re-Assign Dosage</span>
+        </div>
+        </header>
+    </div>
+    <br><br>
+    <br><br>
+
+    <div class="card">
+      <br/>
+      <div class="mdl-card__title">
+        <span style="display:inline;"><h4 style="display:inline;">{{patient["Name"]}}</h4>&nbsp;&nbsp;<p style="display:inline;">{{patient["Age"]}}, {{patient["Gender"]}}</p></span>
+      </div>
+      {% if patient["medical_history"]!=[] %}
+      <div style="background-color:#e0dcec;border-radius: 5px;width:75%;margin-left: auto;margin-right: auto;padding: 25px">
+        <p><b>Medical History</b></p>
+        <table>
+          <tr>
+            <th>Medical Occurrence</th>
+            <th>Timeline</th>
+          </tr>
+          {% for i in patient["medical_history"] %}
+          <tr>
+            <td>{{i["condition"]}}</td>
+            <td>{{i["from"]}} - {{i["to"]}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <br/>
+      {% endif %}
+      {% if user["category"]!="Paramedical" %}
+      <div style="background-color:#e0dcec;border-radius: 5px;width:75%;margin-left: auto;margin-right: auto;padding: 25px">
+        <p><b>Past INR Levels</b></p>
+        <!-- Include ChartJS library -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+        <!-- Create a canvas element to render the chart -->
+        <canvas id="pastINRLevels"></canvas>
+
+        <!-- Initialize the chart using JavaScript -->
+        <script>
+        var ctx = document.getElementById('pastINRLevels').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', "July", "August", "September", "October", "November", "December"],
+                datasets: [{
+                    label: 'INR Levels',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    data: {{monthly_average_inr}}
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+        </script>
+        <script>
+          function validateDosage(input) {
+              input.value = input.value.replace(/[^0-9.]/g, ''); // Allow only numbers and dot
+              input.value = input.value.replace(/(\..*)\./g, '$1'); // Remove multiple dots
+          }
+      </script>      
+      </div>
+      {% endif %}
+      <br/>
+      <div style="background-color:#e0dcec;border-radius: 5px;width:75%;margin-left: auto;margin-right: auto;padding: 25px">
+        <div>
+          <p><b>Reports Raised by Patient:</b></p>
+          <ul>
+            <div style="padding-left:10px;"><li>Side-effects: {{sides}}</li><br/></div>
+            <div style="padding-left:10px;"><li>Lifestyle Changes: {{lifestyles}}</li><br/></div>
+            <div style="padding-left:10px;"><li>Other Medication: {{other_meds}}</li><br/></div><br/>
+            <div style="padding-left:10px;"><li>Prolonged Illnesses: {{prolonged}}</li><br/></div>
+          </ul>
+          <br/>
+        </div>
+        <div>
+          <p><b>Contact of Patient:</b> {{patient["Contact"]}}</p>
+          <p><b>Patient's Kin name and Contact:</b> {{patient["Kin name"]}}, {{patient["Kin Contact"]}}</p>
+        </div>
+      </div>
+      <br/>
+    </div>
+    <br/>
+    <div class="mdl-card mdl-shadow--2dp" style="max-width: 95vw; margin: 0 auto;">
+      <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+        <h2 class="mdl-card__title-text">Assign Dosage</h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        <form style="display: flex; flex-direction: column; align-items: center;" method="POST">
+          <div style="display: flex; align-items: center;">
+            <label style="margin-right: 10px;">Therapy:</label>
+            <select name="type" style="padding: 8px 10px; border-radius: 5px; border: 1px solid lightgray;">
+              <option value="Acitrom" {% if patient["Drug"]["type"]=="Acitrom" %}selected{% endif %}>Acitrom</option>
+              <option value="Warfarin" {% if patient["Drug"]["type"]=="Warfarin" %}selected{% endif %}>Warfarin</option>
+            </select>
+          </div>
+          <div style="display:none;">
+            <div style="display: flex; align-items: center; margin-top: 20px;">
+              <div style="display: flex; align-items: center; margin-top: 20px;">
+                <label style="margin-right: 10px;">Before Food:</label>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="before-food">
+                  <input type="checkbox" name="before_food" id="before-food" class="mdl-switch__input" {% if patient["Drug"]["before_food"] %}checked{% endif %}/>
+                  <span class="mdl-switch__label"></span>
+                </label>
+              </div>
+              <div style="display: flex; align-items: center; margin-top: 20px;">
+                <label style="margin-right: 10px;">After Food:</label>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="after-food">
+                  <input type="checkbox" name="after_food" id="after-food" class="mdl-switch__input" {% if patient["Drug"]["after_food"] %}checked{% endif %}/>
+                  <span class="mdl-switch__label"></span>
+                </label>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; margin-top: 20px;">
+              <label style="margin-right: 10px;">Morning:</label>
+              <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="morning">
+                <input type="checkbox" id="morning" name="morning" class="mdl-switch__input" {% if patient["Drug"]["morning"] %}checked{% endif %}/>
+                <span class="mdl-switch__label"></span>
+              </label>
+            </div>
+            <div style="display: flex; align-items: center; margin-top: 20px;">
+              <label style="margin-right: 10px;">Afternoon:</label>
+              <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="afternoon">
+                <input type="checkbox" id="afternoon" name="afternoon" class="mdl-switch__input" {% if patient["Drug"]["afternoon"] %}checked{% endif %}/>
+                <span class="mdl-switch__label"></span>
+              </label>
+            </div>
+            <div style="display: flex; align-items: center; margin-top: 20px;">
+              <label style="margin-right: 10px;">Night:</label>
+              <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="night">
+                <input type="checkbox" id="night" name="night" class="mdl-switch__input" {% if patient["Drug"]["night"] %}checked{% endif %}/>
+                <span class="mdl-switch__label"></span>
+              </label>
+            </div>
+          </div>
+          <div class="mdl-grid">
+            <table>
+              <tr style="border: none;padding: 8px;background-color: transparent;">
+                <th style="border: none;padding: 8px;background-color: transparent;">
+                <div class="mdl-cell mdl-cell--3-col">
+                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="day-1">
+                    <input type="checkbox" id="day-1" name="MON" {% if MON %}checked{% endif %}  class="mdl-checkbox__input" />
+                    <span class="mdl-checkbox__label" style="color: black;">Monday</span>
+                  </label>
+                </div>
+                </th>
+                <th style="border: none;padding: 8px;background-color: transparent;">
+                  <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                    <span class="mdc-text-field__ripple"></span>
+                    <input class="mdc-text-field__input" type="text" placeholder="Dosage" name="MON-dose" aria-label="Label" oninput="validateDosage(this)">
+                    <span class="mdc-line-ripple"></span> <p style="color: black;">mg</p>
+                  </label>
+                </th>
+              </tr>
+              <tr style="border: none;padding: 8px;background-color: transparent;">
+                <th style="border: none;padding: 8px;background-color: transparent;">
+                  <div class="mdl-cell mdl-cell--3-col">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="day-2">
+                      <input type="checkbox" id="day-2"  name="TUE" {% if TUE %}checked{% endif %} class="mdl-checkbox__input" />
+                      <span class="mdl-checkbox__label" style="color: black;">Tuesday</span>
+                    </label>
+                  </div>
+                </th>
+                <th style="border: none;padding: 8px;background-color: transparent;">
+                  <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                    <span class="mdc-text-field__ripple"></span>
+                    <input class="mdc-text-field__input" type="text" placeholder="Dosage" name="TUE-dose" aria-label="Label" oninput="validateDosage(this)">
+                    <span class="mdc-line-ripple"></span><p style="color: black;">mg</p>
+                  </label>
+                </th>
+              </tr>
+              <tr style="border: none;padding: 8px;background-color: transparent;">
+                <th style="border: none;padding: 8px;background-color: transparent;">
+                  <div class="mdl-cell mdl-cell--3-col">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="day-3">
+                      <input type="checkbox" id="day-3"  name="WED" {% if WED %}checked{% endif %} class="mdl-checkbox__input" />
+                      <span class="mdl-checkbox__label" style="color: black;">Wednesday</span>
+                    </label>
+                  </div>
+                </th>
+                <th style="border: none;padding: 8px;background-color: transparent;">
+                  <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                    <span class="mdc-text-field__ripple"></span>
+                    <input class="mdc-text-field__input" type="text" placeholder="Dosage" name="WED-dose" aria-label="Label" oninput="validateDosage(this)">
+                    <span class="mdc-line-ripple"></span><p style="color: black;">mg</p>
+                  </label>
+                </th>
+                </tr>
+                <tr style="border: none;padding: 8px;background-color: transparent;">
+                  <th style="border: none;padding: 8px;background-color: transparent;">
+                      <div class="mdl-cell mdl-cell--3-col">
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="day-4">
+                          <input type="checkbox" id="day-4"  name="THU" {% if THU %}checked{% endif %} class="mdl-checkbox__input" />
+                          <span class="mdl-checkbox__label" style="color: black;">Thursday</span>
+                        </label>
+                      </div>
+                  </th>
+                  <th style="border: none;padding: 8px;background-color: transparent;">
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                      <span class="mdc-text-field__ripple"></span>
+                      <input class="mdc-text-field__input" type="text" placeholder="Dosage" name="THU-dose" aria-label="Label" oninput="validateDosage(this)">
+                      <span class="mdc-line-ripple"></span><p style="color: black;">mg</p>
+                    </label>
+                  </th>
+                  </tr>
+                  <tr style="border: none;padding: 8px;background-color: transparent;">
+                    <th style="border: none;padding: 8px;background-color: transparent;">
+                      <div class="mdl-cell mdl-cell--3-col">
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="day-5">
+                          <input type="checkbox" id="day-5"  name="FRI" {% if FRI %}checked{% endif %} class="mdl-checkbox__input" />
+                          <span class="mdl-checkbox__label" style="color: black;">Friday</span>
+                        </label>
+                      </div>
+                    </th>
+                    <th style="border: none;padding: 8px;background-color: transparent;">
+                      <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="mdc-text-field__input" type="text" placeholder="Dosage" name="FRI-dose" aria-label="Label" oninput="validateDosage(this)">
+                        <span class="mdc-line-ripple"></span><p style="color: black;">mg</p>
+                      </label>
+                    </th>
+                  </tr>
+                <tr style="border: none;padding: 8px;background-color: transparent;">
+                  <th style="border: none;padding: 8px;background-color: transparent;">
+                    <div class="mdl-cell mdl-cell--3-col">
+                      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="day-6">
+                        <input type="checkbox" id="day-6"  name="SAT" {% if SAT %}checked{% endif %} class="mdl-checkbox__input" />
+                        <span class="mdl-checkbox__label" style="color: black;">Saturday</span>
+                      </label>
+                    </div>
+                  </th>
+                  <th style="border: none;padding: 8px;background-color: transparent;">
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                      <span class="mdc-text-field__ripple"></span>
+                      <input class="mdc-text-field__input" type="text" placeholder="Dosage" name="SAT-dose" aria-label="Label" oninput="validateDosage(this)">
+                      <span class="mdc-line-ripple"></span><p style="color: black;">mg</p>
+                    </label>
+                  </th>
+                </tr>
+              <tr style="border: none;padding: 8px;background-color: transparent;">
+                <th style="border: none;padding: 8px;background-color: transparent;">
+                    <div class="mdl-cell mdl-cell--3-col">
+                      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="day-7">
+                        <input type="checkbox" id="day-7"  name="SUN" {% if SUN %}checked{% endif %} class="mdl-checkbox__input" />
+                        <span class="mdl-checkbox__label" style="color: black;">Sunday</span>
+                      </label>
+                    </div>
+                  </th>
+                  </th>
+                  <th style="border: none;padding: 8px;background-color: transparent;">
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                      <span class="mdc-text-field__ripple"></span>
+                      <input class="mdc-text-field__input" type="text" placeholder="Dosage" name="SUN-dose" aria-label="Label" oninput="validateDosage(this)">
+                      <span class="mdc-line-ripple"></span><p style="color: black;">mg</p>
+                    </label>
+                  </th> 
+                  </tr>
+                  </table>
+                </div>
+          <button style="margin-top: 10px;" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Update Dosage</button>
+        </form>
+      </div>
+    </div>

@@ -1,0 +1,108 @@
+{% from 'macros.html' import navBar %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
+    <title>Main page</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/doctor/main.css')}}">
+    <!-- <link rel="stylesheet" href="main.css"> -->
+    
+</head>
+<body>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> 
+
+    <!-- Uses a transparent header that draws on top of the layout's background -->
+    <style>
+    .demo-layout-transparent {
+        height: 100vh!important;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+      color: grey;
+      position: sticky!important;
+      top: 0!important;
+    }
+    .mdl-layout__drawer.is-visible {
+        position: fixed;
+    }
+    .mdl-layout__obfuscator.is-visible {
+        position: fixed;
+    }
+    </style>
+    
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+      {{ navBar(user, menu) }}
+    </div>
+
+    <div class="search-box" style="font-family: Arial;">
+        <a href="{{url_for('doctor_table')}}" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Table-View</a>
+    </div>
+
+    <main style="font-family: arial; padding-left: 25px;">
+        {% for patient in patients %}
+        <div class="profile" onclick="expand(this)" style="width: 80vw; margin: 0 auto;">
+            <div class="profile__banner" style="align-items: center; background-color: rgb(134, 154, 255);">
+                <div class="profile__info">
+                    <span class="profile__info-display">{{patient["Name"]}} ({{patient["Gender"]}})</span>
+                    <span class="alert__status" style="padding-top:5px;height: auto!important;">
+                        (PID: {{patient['Patient ID']}})
+                    </span>
+                </div>
+            </div>
+            <div class="profile__data" style="padding:10px">
+                <span class="profile__data-following">
+                    <span class="Age-number">{{patient["Age"]}}</span>
+                    <span class="Age-label">Age</span>
+                </span>
+                <span class="profile__data-followers">
+                    <span class="doctor-name">{{user["fullName"]}}</span>
+                    <span class="doctor-label">Doctor</span>
+                </span>
+                <span class="profile__data-likes">
+                    <span class="caretaker-name">{{patient["caretaker"]["fullName"]}}</span>
+                    <span class="caretaker-label">Caretaker</span>
+                </span>
+                <form action="{{url_for('patient_reassign')}}" method='POST'>
+                    <input type="hidden" name="for" value="{{patient.get('Patient ID')}}"/>
+                    <button type="submit" class="mdl-chip">
+                        <span class="mdl-chip__text">Reassign</span>
+                    </button>
+                </form>
+            </div>
+            <a href="{{url_for('patient_specific_view',id=patient['Patient ID'])}}" style="padding-left: 32.5%;">
+                            <button type="button" class="mdl-chip">
+                                <span class="mdl-chip__text">View Patient</span>
+                            </button>
+                        </a>
+        </div>
+        <br/><br/>
+        {% endfor %}
+    </main>
+    <script>
+        function expand(card) {
+            card.classList.toggle('profile--expanded');
+
+            // If card is not expanded after toggle, add 'unexpanded' class
+            if (!card.classList.contains('profile--expanded')) card.classList.toggle('profile--unexpanded');
+            // Else if card is expanded after toggle and still contains 'unexpanded' class, remove 'unexpanded'
+            else if (card.classList.contains('profile--expanded') && card.classList.contains('profile--unexpanded')) card.classList.toggle('profile--unexpanded');
+        }
+
+        function toggleTheme() {
+            let docu = document.querySelector('html');
+
+            docu.classList.toggle('light-theme');
+            docu.classList.toggle('dark-theme');
+        }
+    </script>
+    
+
+
+</body>
+</html>

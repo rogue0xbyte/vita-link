@@ -1,0 +1,79 @@
+{% from 'macros.html' import navBar %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal View</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/doctor/patients_data.css')}}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.2/b-2.3.4/b-colvis-2.3.4/b-html5-2.3.4/b-print-2.3.4/r-2.4.0/datatables.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.2/b-2.3.4/b-colvis-2.3.4/b-html5-2.3.4/b-print-2.3.4/r-2.4.0/datatables.min.js"></script>
+</head>
+<body>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">{{patient["Name"]}}</span>
+    </div>
+  </header>
+  {{ navBar(user, menu) }}
+  <main class="mdl-layout__content">
+    <div class="page-content">
+
+
+
+<br><br><br>
+          <table class="GeneratedTable display" id="table_id">
+            <thead>
+              <tr>
+                <th>Date/time</th>
+                <th>INR Level</th>
+                <th>Lab</th>
+                <th>Attachment</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in patient["inr_levels"] %}
+              <tr>
+                <td>{% if i.get("datetime") %}{{i.get("datetime")}}{% endif %}</td>
+                <td>{{i["level"]}}</td>
+                <td>{{i["labName"]}}</td>
+                <td>{% if i.get("filename") %}<a href="{{url_for('view_inr_filename', filename=i['filename'])}}" target="_blank">View</a>{% endif %}</td>
+              </tr>
+              {% endfor %}
+              {% for i in missedDoses %}
+              <tr>
+                <td>{{i}}</td>
+                <td>{{patient["Drug"]["type"]}}</td>
+                <td>{{patient["Drug"]["strength"]}}</td>
+                <td>MISSED</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+    </div>
+  </main>
+</div>
+<script>
+      $(document).ready( function () {
+        $('#table_id').DataTable({
+          "responsive": true,
+          "buttons": [
+            'pdf', 'xlsx'
+          ]
+        });
+      });
+    </script>
+</body>
+</html>

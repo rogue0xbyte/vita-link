@@ -1,0 +1,748 @@
+[
+    {
+        "type": "Doctor",
+        "category": "Cardiologist",
+        "ID": "DOC00001",
+        "fullName": "Aaditya Rengarajan",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "patients": [
+            "23PAT05082",
+            "23PAT05121",
+            "23PAT07121",
+            "23PAT07221",
+            "23PAT09271",
+            "23PAT12201"
+        ],
+        "PFP": "/static/images/empty_user.jpg"
+    },
+    {
+        "type": "Doctor",
+        "category": "Clinical Pharmacist",
+        "ID": "DOC00002",
+        "fullName": "Subhasri Shreya S L",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": [
+            "23PAT05082",
+            "23PAT05121",
+            "23PAT07121",
+            "23PAT07221",
+            "23PAT12201",
+            "23PAT09271"
+        ]
+    },
+    {
+        "type": "IT",
+        "category": "IT",
+        "ID": "IT00001",
+        "fullName": "Aaditya Rengaraj",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg"
+    },
+    {
+        "type": "Patient",
+        "Name": "Ram Shekar",
+        "Contact": "+91 12345 67890",
+        "Kin name": "MyKin",
+        "Kin Contact": "1234566789",
+        "Age": "59",
+        "Gender": "M",
+        "Patient ID": "23PAT05082",
+        "Drug": {
+            "type": "Acitrom",
+            "strength": 0,
+            "before_food": true,
+            "after_food": false,
+            "morning": false,
+            "afternoon": true,
+            "night": false,
+            "days": [
+                [
+                    "MON",
+                    "24"
+                ],
+                [
+                    "SAT",
+                    "4"
+                ]
+            ]
+        },
+        "medical_history": [
+            {
+                "duration": "3 Months",
+                "condition": "None"
+            }
+        ],
+        "inr_levels": [
+            {
+                "level": "28.54",
+                "location": "India",
+                "labName": "BioLine",
+                "datetime": "2023-07-11T20:00:17I"
+            },
+            {
+                "level": "123",
+                "location": "topology",
+                "labName": "CN",
+                "datetime": "2023-07-11T20:02:05I"
+            },
+            {
+                "level": "5",
+                "location": "India",
+                "labName": "CN",
+                "filename": "001.jpg",
+                "datetime": "2023-07-11T20:10:22I"
+            },
+            {
+                "level": "5",
+                "location": "India",
+                "labName": "BioLine",
+                "datetime": "2023-07-05T21:05:33I",
+                "filename": "Parents_NoObjection.docx"
+            },
+            {
+                "level": "2.1",
+                "location": "India",
+                "labName": "BioLine",
+                "datetime": "2023-07-11T22:04:02I",
+                "filename": "PASSPORT_PHOTO.jpg"
+            },
+            {
+                "level": "",
+                "location": "clld",
+                "labName": "",
+                "datetime": "2023-12-14T09:13:22I",
+                "filename": "ef670cdcb487c885135e1e8e2a50e751.png"
+            },
+            {
+                "level": "",
+                "location": "clld",
+                "labName": "",
+                "datetime": "2023-12-14T09:13:26I",
+                "filename": "f04a70c4_EF670CDCB487C885135E1E8E2A50E751.PNG"
+            }
+        ],
+        "reports": [
+            {
+                "type": "side",
+                "details": "Vomiting Of Blood"
+            },
+            {
+                "type": "side",
+                "details": "Joint Pain"
+            },
+            {
+                "type": "side",
+                "details": "test"
+            },
+            {
+                "type": "side",
+                "details": "test"
+            },
+            {
+                "type": "others",
+                "details": "Paracetamol "
+            },
+            {
+                "type": "side",
+                "details": "Heavy Menstrual Bleeding"
+            },
+            {
+                "type": "side",
+                "details": "Black/Bloody Stool"
+            },
+            {
+                "type": "side",
+                "details": "Severe Stomach Pain"
+            },
+            {
+                "type": "lifestyle",
+                "details": "Nothing"
+            },
+            {
+                "type": "prolonged",
+                "details": "...."
+            },
+            {
+                "type": "others",
+                "details": "Gshshsgshhaba"
+            },
+            {
+                "type": "prolonged",
+                "details": "Hshdgajan"
+            },
+            {
+                "type": "lifestyle",
+                "details": "No"
+            },
+            {
+                "type": "side",
+                "details": "Vomiting Of Blood"
+            },
+            {
+                "type": "others",
+                "details": "Aspirin"
+            },
+            {
+                "type": "others",
+                "details": "Ghhh"
+            },
+            {
+                "type": "prolonged",
+                "details": "Head ache"
+            },
+            {
+                "type": "prolonged",
+                "details": "Nil"
+            },
+            {
+                "type": "lifestyle",
+                "details": "Walking "
+            },
+            {
+                "type": "side",
+                "details": "Severe Stomach Pain"
+            },
+            {
+                "type": "side",
+                "details": "Vision Changes"
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "lifestyle",
+                "details": ""
+            },
+            {
+                "type": "prolonged",
+                "details": ""
+            },
+            {
+                "type": "prolonged",
+                "details": ""
+            },
+            {
+                "type": "others",
+                "details": "Calpal"
+            },
+            {
+                "type": "prolonged",
+                "details": "Tuberoculosiso\r\n"
+            },
+            {
+                "type": "lifestyle",
+                "details": "Selfie addiction"
+            },
+            {
+                "type": "lifestyle",
+                "details": "12312341232423"
+            },
+            {
+                "type": "side",
+                "details": "Severe Headache"
+            },
+            {
+                "type": "side",
+                "details": "Severe Stomach Pain"
+            },
+            {
+                "type": "others",
+                "details": "DOLO 650"
+            },
+            {
+                "type": "prolonged",
+                "details": "Cancer"
+            },
+            {
+                "type": "lifestyle",
+                "details": "Smoking"
+            },
+            {
+                "type": "lifestyle",
+                "details": "Smoking"
+            },
+            {
+                "type": "side",
+                "details": "Joint Pain"
+            },
+            {
+                "type": "side",
+                "details": "Vomiting Of Blood"
+            },
+            {
+                "type": "side",
+                "details": "Coughing Up Blood"
+            },
+            {
+                "type": "side",
+                "details": "8723"
+            },
+            {
+                "type": "side",
+                "details": "Coughing Up Blood"
+            },
+            {
+                "type": "side",
+                "details": "21321"
+            }
+        ],
+        "misdose-alert": false,
+        "dosages": [],
+        "next_test_date": "UNASSIGNED",
+        "start_date": "08 January '23",
+        "target_inr": "2.5",
+        "StoppageReason": ""
+    },
+    {
+        "type": "Patient",
+        "Name": "Raghu",
+        "Contact": "+91 12345 67890",
+        "Kin name": "Adam Levine",
+        "Kin Contact": "12343241",
+        "Age": "48",
+        "Gender": "M",
+        "Patient ID": "23PAT05121",
+        "Drug": {
+            "type": "Acitrom",
+            "strength": "25",
+            "before_food": true,
+            "after_food": false,
+            "morning": false,
+            "afternoon": true,
+            "night": false,
+            "days": [
+                [
+                    "MON",
+                    "2"
+                ],
+                [
+                    "TUE",
+                    "3"
+                ],
+                [
+                    "WED",
+                    "4"
+                ],
+                [
+                    "THU",
+                    "5"
+                ],
+                [
+                    "FRI",
+                    "4"
+                ],
+                [
+                    "SAT",
+                    "3"
+                ],
+                [
+                    "SUN",
+                    "2"
+                ]
+            ]
+        },
+        "medical_history": [
+            {
+                "duration": "3 Months",
+                "condition": ""
+            }
+        ],
+        "inr_levels": [
+            {
+                "level": "5",
+                "location": "India",
+                "labName": "BioLine",
+                "myfile": "Appendix_B_FINAL.pdf",
+                "datetime": "2023-07-11T19:51:57I"
+            }
+        ],
+        "reports": [],
+        "misdose-alert": false,
+        "dosages": [],
+        "next_test_date": "29-Dec-2023 20:49",
+        "start_date": "12 May '23",
+        "target_inr": "2.5"
+    },
+    {
+        "type": "Patient",
+        "Name": "Resh",
+        "Contact": "+91  ",
+        "Kin name": "",
+        "Kin Contact": "",
+        "Age": "25",
+        "Gender": "F",
+        "Patient ID": "23PAT07121",
+        "Drug": {
+            "type": "Warfarin",
+            "strength": 0,
+            "before_food": true,
+            "after_food": false,
+            "morning": false,
+            "afternoon": true,
+            "night": false,
+            "days": [
+                [
+                    "MON",
+                    ""
+                ],
+                [
+                    "TUE",
+                    ""
+                ],
+                [
+                    "WED",
+                    ""
+                ],
+                [
+                    "THU",
+                    ""
+                ],
+                [
+                    "FRI",
+                    ""
+                ],
+                [
+                    "SAT",
+                    ""
+                ],
+                [
+                    "SUN",
+                    ""
+                ]
+            ]
+        },
+        "medical_history": [
+            {
+                "duration": "3 Months",
+                "condition": ""
+            }
+        ],
+        "inr_levels": [],
+        "reports": [],
+        "misdose-alert": false,
+        "dosages": [],
+        "next_test_date": "UNSCHEDULED",
+        "start_date": "12 July '23",
+        "target_inr": "2",
+        "StoppageReason": "3 Months Passed since Therapy Started"
+    },
+    {
+        "type": "IT",
+        "category": "IT",
+        "ID": "IT00002",
+        "fullName": "S Karun",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg"
+    },
+    {
+        "type": "Patient",
+        "Name": "Rsk",
+        "Contact": "+91  ",
+        "Kin name": "",
+        "Kin Contact": "",
+        "Age": "52",
+        "Gender": "M",
+        "Patient ID": "23PAT07221",
+        "Drug": {
+            "type": "Acitrom",
+            "strength": 0,
+            "before_food": true,
+            "after_food": false,
+            "morning": false,
+            "afternoon": true,
+            "night": false,
+            "days": [
+                [
+                    "MON",
+                    "23"
+                ],
+                [
+                    "TUE",
+                    "Er"
+                ],
+                [
+                    "WED",
+                    ""
+                ],
+                [
+                    "THU",
+                    ""
+                ],
+                [
+                    "FRI",
+                    ""
+                ],
+                [
+                    "SAT",
+                    ""
+                ],
+                [
+                    "SUN",
+                    ""
+                ]
+            ]
+        },
+        "medical_history": [
+            {
+                "duration": "3 Months",
+                "condition": ""
+            }
+        ],
+        "inr_levels": [],
+        "reports": [],
+        "misdose-alert": false,
+        "dosages": [],
+        "next_test_date": "UNSCHEDULED",
+        "start_date": "22 July '23",
+        "target_inr": "2",
+        "StoppageReason": "est@123"
+    },
+    {
+        "type": "Patient",
+        "Name": "Kevin Mitnick",
+        "Contact": "+91 12345 67890",
+        "Kin name": "AeO",
+        "Kin Contact": "1230392492",
+        "Age": "55",
+        "Gender": "M",
+        "Patient ID": "23PAT09271",
+        "Drug": {
+            "type": "Warfarin",
+            "strength": "25",
+            "before_food": true,
+            "after_food": false,
+            "morning": false,
+            "afternoon": true,
+            "night": false,
+            "days": [
+                [
+                    "MON",
+                    "Weerr"
+                ],
+                [
+                    "TUE",
+                    "Testinh:+"
+                ],
+                [
+                    "WED",
+                    ":#&&#*"
+                ],
+                [
+                    "THU",
+                    "Hdhdy:\u20b9&"
+                ],
+                [
+                    "FRI",
+                    ":\u20b9*65"
+                ],
+                [
+                    "SAT",
+                    "Hdhdh6"
+                ],
+                [
+                    "SUN",
+                    "*\u20b9*\u20b9-6"
+                ]
+            ]
+        },
+        "medical_history": [
+            {
+                "duration": "3 Months",
+                "condition": ""
+            }
+        ],
+        "inr_levels": [],
+        "reports": [],
+        "misdose-alert": false,
+        "dosages": [],
+        "next_test_date": "06-Dec-2023 09:00AM",
+        "start_date": "27 September '23",
+        "target_inr": "3.8 - 2.3",
+        "StoppageReason": "Left Hospital."
+    },
+    {
+        "type": "Doctor",
+        "category": "Resident",
+        "ID": "DOC00003",
+        "fullName": "Testdoctor",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": [
+            "23PAT05082",
+            "23PAT09271",
+            "23PAT07221",
+            "23PAT07121",
+            "23PAT12201"
+        ]
+    },
+    {
+        "type": "IT",
+        "category": "IT",
+        "ID": "IT00003",
+        "fullName": "It test",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg"
+    },
+    {
+        "type": "Doctor",
+        "category": "Cardiologist",
+        "ID": "DOC00004",
+        "fullName": "GR",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": [
+            "23PAT05082",
+            "23PAT07221",
+            "23PAT07121",
+            "23PAT09271",
+            "23PAT12201"
+        ]
+    },
+    {
+        "type": "Patient",
+        "Name": "sanjay",
+        "Contact": "+91 78346 82748",
+        "Kin name": "Kumaar",
+        "Kin Contact": "2398219833",
+        "Age": "20",
+        "Gender": "M",
+        "Patient ID": "23PAT12201",
+        "Drug": {
+            "type": "Warfarin",
+            "strength": 25,
+            "before_food": true,
+            "after_food": false,
+            "morning": false,
+            "afternoon": true,
+            "night": false,
+            "days": [
+                [
+                    "TUE",
+                    "213"
+                ]
+            ]
+        },
+        "medical_history": [
+            {
+                "duration": "6 Months",
+                "condition": "Healthy"
+            }
+        ],
+        "inr_levels": [],
+        "reports": [],
+        "misdose-alert": false,
+        "dosages": [],
+        "next_test_date": "UNSCHEDULED",
+        "start_date": "22 December '23",
+        "target_inr": "None - None"
+    },
+    {
+        "type": "Doctor",
+        "category": "Cardiologist",
+        "ID": "DOC00005",
+        "fullName": "Sanjay",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": []
+    },
+    {
+        "type": "IT",
+        "category": "IT",
+        "ID": "IT00004",
+        "fullName": "Kumaar",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg"
+    },
+    {
+        "type": "Doctor",
+        "category": "Clinical Pharmacist",
+        "ID": "DOC00006",
+        "fullName": "Soorya Subramani",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": [
+            "23PAT05082"
+        ]
+    },
+    {
+        "type": "Doctor",
+        "category": "Resident",
+        "ID": "DOC00007",
+        "fullName": "bheem",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": [
+            "23PAT09271"
+        ]
+    },
+    {
+        "type": "Doctor",
+        "category": "Clinical Pharmacist",
+        "ID": "DOC00008",
+        "fullName": "ash",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": []
+    },
+    {
+        "type": "Doctor",
+        "category": "Clinical Pharmacist",
+        "ID": "DOC00009",
+        "fullName": "I",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": []
+    },
+    {
+        "type": "Doctor",
+        "category": "Paramedical",
+        "ID": "DOC00010",
+        "fullName": "O",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": []
+    },
+    {
+        "type": "Doctor",
+        "category": "Lab Personnel",
+        "ID": "DOC00011",
+        "fullName": "d",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg",
+        "patients": []
+    },
+    {
+        "type": "IT",
+        "category": "IT",
+        "ID": "IT00005",
+        "fullName": "Prof Example",
+        "PassHash": "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86",
+        "PFP": "/static/images/empty_user.jpg"
+    }
+]

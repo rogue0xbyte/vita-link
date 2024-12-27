@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found - Vita-Link</title>
+  <style type="text/css">
+/* Basic styles for error pages */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.error-container {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.error-content {
+  padding: 40px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-size: 2em;
+  color: #333;
+}
+
+p {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  background-color: #007bff;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+/* Glassmorphism effect */
+.glassmorphic {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+  </style>
+</head>
+<body>
+  <center style="position:absolute; top:50px;display:flex;">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/fe/PSG_Institute_of_Medical_Sciences_%26_Research_Logo.svg/640px-PSG_Institute_of_Medical_Sciences_%26_Research_Logo.svg.png" style="height: 80px;">
+        &nbsp;&nbsp;&nbsp;&nbsp;<div class="vl"></div>&nbsp;&nbsp;
+        <img src="https://psgpsp.edu.in/wp-content/uploads/2021/02/right-logo.png" style="height: 46px;margin-top:17.5px">
+    </center>
+    <br/><br/>
+  <div class="error-container">
+    <div class="error-content glassmorphic">
+      <h1>{{title}}</h1>
+      <p>{{content}}</p>
+      <br/>
+      <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExenNyYzg1bWR1cTdlb25waGozY3JxcDcyaXN4dWpteGk0eTl6NGw2diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26xBIygOcC3bAWg3S/giphy.gif" style="width:95%" />
+      <br/><br/>
+      <a href="javascript:history.back()" class="btn">Go Back</a>
+    </div>
+  </div>
+</body>
+</html>

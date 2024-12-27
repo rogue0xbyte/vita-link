@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> 
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <style>
+      * {
+        font-family: 'Roboto';
+      }
+      .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 95vw;
+        margin: auto;
+        text-align: center;
+        font-family: arial;
+      }
+      .title {
+        color: grey;
+        font-size: 18px;
+      }
+      button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+      }
+      a {
+        text-decoration: none;
+        font-size: 22px;
+        color: black;
+      }
+      table {
+        width: 100%;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      tr:nth-child(odd) {
+        background-color: #f2f2f2;
+      }
+      th {
+        background-color: #3952B7;
+        color: white;
+      }
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      li {
+        float: left;
+      }
+      li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      li a:hover {
+        background-color: #111;
+      }
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #333;
+        color: white;
+        text-align: center;
+      }
+      .mdl-layout__drawer.is-visible {
+        position: fixed;
+      }
+      .mdl-layout__obfuscator.is-visible {
+          position: fixed;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Uses a transparent header that draws on top of the layout's background -->
+    <style>
+    .demo-layout-transparent {
+        height: 100vh!important;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      color: grey;
+      position: sticky!important;
+      top: 0!important;
+    }
+    </style>
+  
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">{{user["Name"]}}</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+        </div>
+        </header>
+        <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Menu</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="{{url_for('patient_home')}}">Dosage Dashboard</a>
+            <a class="mdl-navigation__link" href="{{url_for('take_dose')}}">Take Dose</a>
+            <a class="mdl-navigation__link" href="{{url_for('update_INR_pat')}}">Update INR</a>
+<!--             <a class="mdl-navigation__link" href="{{url_for('stop_meds')}}">Stop Medications</a> -->
+            <hr/>
+            <a class="mdl-navigation__link" href="{{url_for('other_medication')}}">Report Other medications</a>
+            <a class="mdl-navigation__link" href="{{url_for('prolonged_illness')}}">Report Prolonged Illness</a>
+            <a class="mdl-navigation__link" href="{{url_for('lifestyle_changes')}}">Report Lifestyle Changes</a>
+            <a class="mdl-navigation__link" href="{{url_for('side_effects')}}">Report Side Effects</a>
+            <hr/>
+            <a class="mdl-navigation__link" href="{{url_for('patient_profile')}}">My Profile</a>
+
+            <div style="height: 50px; width: 50px; border-radius: 50%; overflow: hidden;padding-left: 20px;">
+              <img src="{{user['PFP']}}" style="width: 100%">
+            </div>
+            <p style="padding-left: 20px;color:black;">{{user['Name']}}</p>
+            <a class="mdl-navigation__link" href="{{url_for('logout')}}" style="font-family: Arial, Helvetica, sans-serif;">Log out</a>
+        </nav>
+
+        </div>
+    <br><br>
+
+    <div class="card">
+      {% if patient["medical_history"]!=[] %}
+      <div style="background-color:#e0dcec;border-radius: 5px;width:75%;margin-left: auto;margin-right: auto;padding: 25px">
+        <table>
+          <tr>
+            <th>Medical Diagnosis</th>
+            <th>Duration</th>
+          </tr>
+          {% for i in patient["medical_history"] %}
+          <tr>
+            <td>{{i["condition"]}}</td>
+            <td>{{i["duration"]}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <br/>
+      {% endif %}
+      <div style="background-color:#e0dcec;border-radius: 5px;width:75%;margin-left: auto;margin-right: auto;padding: 25px">
+        <p><b>Past INR Levels</b></p>
+        <!-- Include ChartJS library -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+        <!-- Create a canvas element to render the chart -->
+        <canvas id="pastINRLevels"></canvas>
+
+        <!-- Initialize the chart using JavaScript -->
+        <script>
+        var ctx = document.getElementById('pastINRLevels').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', "July", "August", "September", "October", "November", "December"],
+                datasets: [{
+                    label: 'INR Levels',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    data: {{monthly_average_inr}}
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+        </script>
+        </div>
+      <br/>
+      <div style="display: flex; flex-direction: column;" style="background-color:#e0dcec;border-radius: 5px;width:75%;margin-left: auto;margin-right: auto;padding: 25px">
+        <div>
+          <p><b>Type of Therapy:</b> {{patient["Drug"]["type"] | capitalize}} Therapy</p>
+            Evenings (Around 6PM)
+          <p><b>Assigned Drug Dosage Level:</b></p>
+          <br/>
+          <table>
+            <tr>
+              <th>Day</th>
+              <th>Dosage</th>
+            </tr>
+            {% for i in patient["Drug"]["days"] %}
+            <tr>
+              <td>{{i[0]}}</td>
+              <td>{{i[-1]}}mg {% if patient["Drug"]["before_food"]==True  %}
+            Before Food 
+            {% if patient["Drug"]["after_food"]==True  %}
+              and
+            {% endif %}
+          {% endif %}
+          {% if patient["Drug"]["after_food"]==True  %}
+            After Food
+          {% endif %}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <br/>
+        </div>
+        <div>
+          <p><b>Therapy Start Date:</b> {{patient["start_date"]}}</p>
+        </div>
+        <div>
+          <p><b>Current INR:</b> {% if current_inr>0 %}{{current_inr}}{% else %}UNKNOWN{% endif %}</p>
+          <p><b>Target INR:</b> {{target_inr}}</p>
+        </div>
+        <div>
+          <p><b>Reports Raised:</b></p>
+          <ul>
+            <div style="padding-left:10px;"><li>Side-effects: {{sides}}</li><br/></div>
+            <div style="padding-left:10px;"><li>Lifestyle Changes: {{lifestyles}}</li><br/></div>
+            <div style="padding-left:10px;"><li>Other Medication: {{other_meds}}</li><br/></div><br/>
+            <div style="padding-left:10px;"><li>Prolonged Illnesses: {{prolonged}}</li><br/></div>
+          </ul>
+          <br/>
+        </div>
+        <div>
+          <p><b>Contact:</b> {{patient["Contact"]}}</p>
+          <p><b>Kin Name and Contact:</b> {{patient["Kin name"]}}, {{patient["Kin Contact"]}}</p>
+        </div>
+      </div>
+    </div>

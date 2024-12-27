@@ -1,0 +1,29 @@
+body {
+      background-image: linear-gradient(pink, skyblue);
+      font-family: Montserrat, sans-serif;      
+  
+      min-height: 100vh;
+      margin: 0;
+  }
+
+table.GeneratedTable {
+  width: 100%;
+  background-color: #d9bffe;
+  border-collapse: collapse;
+  border-width: 3px;
+  border-color: #d9d9d9;
+  border-style: solid;
+  color: #000000;
+}
+
+table.GeneratedTable td, table.GeneratedTable th {
+  border-width: 3px;
+  border-color: #d9d9d9;
+  border-style: solid;
+  padding: 3px;
+}
+
+table.GeneratedTable thead {
+  background-color: #d9d9d9;
+}
+

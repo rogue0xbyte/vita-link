@@ -1,0 +1,115 @@
+{% from 'macros.html' import navBar %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedules</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/doctor/schedules.css')}}">
+
+</head>
+<body>
+  <link rel="stylesheet" href="{{url_for('static',filename='styles/doctor/patients_data.css')}}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.2/b-2.3.4/b-colvis-2.3.4/b-html5-2.3.4/b-print-2.3.4/r-2.4.0/datatables.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.2/b-2.3.4/b-colvis-2.3.4/b-html5-2.3.4/b-print-2.3.4/r-2.4.0/datatables.min.js"></script>
+<style type="text/css">
+    .dataTables_wrapper{
+        width: 95vw!important;
+    }
+</style>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">Schedules</span>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+    </div>
+  </header>
+  {{ navBar(user, menu) }}
+  <main class="mdl-layout__content">
+    <h6>INR Value Test</h6>
+    <table class="GeneratedTable" id="table_id">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Caregiver</th>
+            <th>Date/Time</th>
+            <th>Reschedule To</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in patients %}
+            <tr>
+                <td>{{i["Name"]}}</td>
+                <td>{{i["caretaker"]["fullName"]}}</td>
+                <td>{{i["next_test_date"]}}</td>
+                <td>
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <form action="{{url_for('doctor_schedules')}}" method="POST">
+                      <input class="mdl-textfield__input" type="datetime-local" name="reschedule-pat-{{i['Patient ID']}}-to"/>
+                      <br/><br/>
+                      <input id="submitter" style="margin-top: 10px;" value="Reschedule" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"/>
+                    </form>
+                  </div>
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>  
+
+      <h6>Therapies</h6>
+      <table class="GeneratedTable" id="therapies">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Caregiver</th>
+            <th>Therapy</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in patients %}
+            <tr>
+                <td>{{i["Name"]}}</td>
+                <td>{{i["caretaker"]["fullName"]}}</td>
+                <td>{{i["Drug"]["type"]}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>  <br/><br/><br/><br/><br/><br/><br/>
+  </main>
+
+    <script>
+      $(document).ready( function () {
+        $('#table_id').DataTable({
+          "responsive": true,
+          "buttons": [
+            'pdf', 'xlsx'
+          ]
+        });
+      });
+      $(document).ready( function () {
+        $('#therapies').DataTable({
+          "responsive": true,
+          "buttons": [
+            'pdf', 'xlsx'
+          ]
+        });
+      });
+    </script>
+</div>
+
+
+
+</body>
+</html>

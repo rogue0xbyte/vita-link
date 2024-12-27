@@ -1,0 +1,24 @@
+{% macro navBar(user, menu="lowerMenu") %}
+<div class="mdl-layout__drawer" style="background: rgba( 255, 255, 255, 0.75 ); box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); backdrop-filter: blur( 4px ); -webkit-backdrop-filter: blur( 4px ); border-radius: 10px;border-top-left-radius: 0px;border-bottom-left-radius: 0px; border: 1px solid rgba( 255, 255, 255, 0.18 );">
+    <br/>
+    <span class="mdl-layout-title"><b>Menu</b></span>
+    <br/>
+    <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="{{url_for('doctor_home')}}" style="font-family: Arial, Helvetica, sans-serif;color:rgb(0,0,0)"><span class="material-icons">diversity_1</span>&nbsp;&nbsp;&nbsp;&nbsp;View all patients</a>
+          <hr style="border-top: 1px solid rgba(105,105,110,0.35)!important;" />
+          <a class="mdl-navigation__link" href="url_for('doctor_today_reports')" style="font-family: Arial, Helvetica, sans-serif;color:rgb(28,28,30)"><span class="material-icons">summarize</span>&nbsp;&nbsp;&nbsp;&nbsp;Today's INR Reports</a>
+          <hr style="border-top: 1px solid rgba(105,105,110,0.35)!important;" />
+          {% if menu=="higherMenu" %}
+          <a class="mdl-navigation__link" href="{{url_for('new_patient_creation')}}" style="font-family: Arial, Helvetica, sans-serif;color:rgb(28,28,30)"><span class="material-icons">person_add</span>&nbsp;&nbsp;&nbsp;&nbsp;Add new patient</a>
+          {% endif %}
+<!--           <a class="mdl-navigation__link" href="{{url_for('doctor_update_inr')}}" style="font-family: Arial, Helvetica, sans-serif;">Update INR Values</a> -->
+          <a style="padding-top: 40vh;"></a>
+          <div style="height: 75px; width: 75px; border-radius: 50%; padding-left: 20px;">
+            <img src="{{user['PFP']}}" style="width: 100%; border-radius: 50%;">
+          </div>
+          <h6 style="padding-left: 20px;color:black;">{{user['fullName']}}<br/><p>{{user['category']}}</p></h6>
+          <br/>
+          <a class="mdl-navigation__link" href="{{url_for('logout')}}" style="font-family: Arial, Helvetica, sans-serif;">Log out</a>
+        </nav>
+  </div>
+{% endmacro %}

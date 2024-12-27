@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/doctor/improve.css')}}">
+    <style type="text/css">
+    	.vl {
+		  border-left: 1px solid black;
+		  height: 50px;
+		  margin-top: 10px;
+		}
+    </style>
+</head>
+<body style="background: rgb();background: radial-gradient(rgb(152,152,157), rgb(235,235,240));">
+    <center style="position:absolute; top:50px;display:flex;">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/fe/PSG_Institute_of_Medical_Sciences_%26_Research_Logo.svg/640px-PSG_Institute_of_Medical_Sciences_%26_Research_Logo.svg.png" style="height: 80px;">
+        &nbsp;&nbsp;&nbsp;&nbsp;<div class="vl"></div>&nbsp;&nbsp;
+        <img src="https://psgpsp.edu.in/wp-content/uploads/2021/02/right-logo.png" style="height: 46px;margin-top:17.5px">
+    </center>
+    <div class="box" style="padding-top: 100px;margin-top: 50px;">
+		<form method="POST" autocomplete="off">
+			<h2>Sign in</h2>
+			<div class="inputBox">
+				<input type="text" name="username" required="required">
+				<span>Username</span>
+				<i></i>
+			</div>
+			<div class="inputBox">
+				<input type="password" name="password" required="required">
+				<span>Password</span>
+				<i></i>
+			</div>
+			<input type="submit" style="color:white" value="Login">
+		</form>
+	</div>
+</body>
+</html>
