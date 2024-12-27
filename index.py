@@ -1,34 +1,26 @@
-from extensions import mongo
+from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify, send_file
+from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.binary import Binary
 import uuid, json, io
 import hashlib
-
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import ssl, smtplib, hashlib, uuid
-
 from werkzeug.utils import secure_filename
-from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify, send_file
+
 import os
 import datetime as dt
 from datetime import datetime, timedelta
-
-
 app = Flask(__name__)
 
 app.secret_key = "KrrrzPPghtfgSKbtJEQCTA"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.permanent_session_lifetime = timedelta(minutes=15)
 
-app.config['MONGO_URI'] = "mongodb+srv://flask-access:qwertyuiop@cardio.z2m3vrf.mongodb.net/app?retryWrites=true&w=majority"
-mongo.init_app(app)
+client = MongoClient("mongodb+srv://21z233:vitalink@db.rj56s.mongodb.net/?retryWrites=true&w=majority&appName=db")
+db = client["db"]
 
-# print("[MONGODB] CONNECTED")
-
-a = mongo.db.dataset.find() 
-
-# print("[MONGODB] INITIALIZED",a)
 
 #-----------FUNCTIONS-----------------
 
@@ -36,18 +28,19 @@ def addDoctor(cat, id, name, password):
     password.replace("\n", "")
     passHash = hashlib.sha512(password.encode('utf-8')).hexdigest()
     doctor = {'type': "Doctor", 'category': cat, 'ID': id, 'fullName': name, 'PassHash': passHash, "PFP":"/static/images/empty_user.jpg","patients":[]}
-    mongo.db.dataset.insert_one(doctor)
+    db["dataset"].insert_one(doctor)
+    print("addition done")
     return doctor
 
 def addIT(id, name, password):
     password.replace("\n", "")
     passHash = hashlib.sha512(password.encode('utf-8')).hexdigest()
     doctor = {'type': "IT", "category":"IT", 'ID': id, 'fullName': name, 'PassHash': passHash, "PFP":"/static/images/empty_user.jpg"}
-    mongo.db.dataset.insert_one(doctor)
+    db["dataset"].insert_one(doctor)
     return doctor
 
 def removeUser(_id):
-    mongo.db.dataset.delete_one({"_id": ObjectId(str(_id))})
+    db["dataset"].delete_one({"_id": ObjectId(str(_id))})
 
 
 def addPatient(Name, History, Contact, Kin, Kin_cont, age, gener, ID, therapy, strength, bf, af, mor, after, night, days, docs=[], StartDate='', TargetINR='0 - 0'):
@@ -55,20 +48,20 @@ def addPatient(Name, History, Contact, Kin, Kin_cont, age, gener, ID, therapy, s
     patient = {"type":"Patient", "Name": Name, "Contact": Contact,"Kin name": Kin,"Kin Contact": Kin_cont,"Age": age,"Gender": gener,"Patient ID": ID, "Drug":{"type": therapy, "strength": strength, "before_food": bf, "after_food":af, "morning":mor, "afternoon":after, "night":night, "days":days},
                 "medical_history": History, "inr_levels":[], "reports": [], "misdose-alert": False,
                 "dosages": [], "next_test_date": "UNSCHEDULED", "start_date": StartDate, "target_inr":TargetINR}
-    mongo.db.dataset.insert_one(patient)
+    db["dataset"].insert_one(patient)
     for i in docs:
-        patients = mongo.db.dataset.find_one({"ID": i}).get("patients")
+        patients = db["dataset"].find_one({"ID": i}).get("patients")
         if patients==None: patients=[]
         patients.append(ID)
-        mongo.db.dataset.update_one({"ID": i}, {"$set": {"patients": patients}})
+        db["dataset"].update_one({"ID": i}, {"$set": {"patients": patients}})
     return patient
 
 def assignCaretaker(patientID, docID):
-    patients = mongo.db.dataset.find_one({"ID": docID}).get("patients")
+    patients = db["dataset"].find_one({"ID": docID}).get("patients")
     if patients==None: patients=[]
 
-    # patient = mongo.db.dataset.find_one({"Patient ID":patientID})
-    # caretakers = mongo.db.dataset.find({"type":"Doctor"})
+    # patient = db["dataset"].find_one({"Patient ID":patientID})
+    # caretakers = db["dataset"].find({"type":"Doctor"})
     # caretaker = {"fullName":"Unassigned"}
     # for j in caretakers:
     #     if (i in list(j.get("patients"))) and j.get("ID")!=json.loads(session.get("user")).get("ID"):
@@ -78,33 +71,33 @@ def assignCaretaker(patientID, docID):
 
     if patientID not in patients:
         patients.append(patientID)
-        mongo.db.dataset.update_one({"ID": docID}, {"$set": {"patients": patients}})
+        db["dataset"].update_one({"ID": docID}, {"$set": {"patients": patients}})
     return True
 
 def addPatientReport(PID, repType, details):
     report = {"type": repType, # "side", "lifestyle" or "others"
               "details":details}
-    reports = mongo.db.dataset.find_one({"Patient ID": PID}).get("reports")
+    reports = db["dataset"].find_one({"Patient ID": PID}).get("reports")
     reports.append(report)
-    mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"reports": reports}})
+    db["dataset"].update_one({"Patient ID": PID}, {"$set": {"reports": reports}})
 
 def addDosage(PID, Drug, amt, Date, rmk=""): 
     dose = {"datetime": Date,
             "drug": Drug,
             "strength": amt,
             "remark": rmk}
-    doses = mongo.db.dataset.find_one({"Patient ID": PID}).get("dosages")
+    doses = db["dataset"].find_one({"Patient ID": PID}).get("dosages")
     doses.append(dose)
-    mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"dosages": doses}})
+    db["dataset"].update_one({"Patient ID": PID}, {"$set": {"dosages": doses}})
     return dose  
 
 def updateINR(PID, INR, datetimeValue=datetime.now().strftime("%Y-%m-%dT%H:%M:%SI")):
     INR.update({"datetime":datetimeValue})
-    inr_levels = mongo.db.dataset.find_one({"Patient ID": PID}).get("inr_levels")
+    inr_levels = db["dataset"].find_one({"Patient ID": PID}).get("inr_levels")
     if inr_levels==None: inr_levels=[]
     inr_levels.append(INR)
-    mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"inr_levels": inr_levels}})
-    mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"next_test_date": "UNASSIGNED"}})
+    db["dataset"].update_one({"Patient ID": PID}, {"$set": {"inr_levels": inr_levels}})
+    db["dataset"].update_one({"Patient ID": PID}, {"$set": {"next_test_date": "UNASSIGNED"}})
     return True
 
 def listMissedDoses(PID):
@@ -113,9 +106,9 @@ def listMissedDoses(PID):
 
     today = myDT.now().date()
     try:
-        patient = mongo.db.dataset.find_one({"_id": ObjectId(str(PID))})
+        patient = db["dataset"].find_one({"_id": ObjectId(str(PID))})
     except:
-        patient = mongo.db.dataset.find_one({"Patient ID": (str(PID))})
+        patient = db["dataset"].find_one({"Patient ID": (str(PID))})
     start_date = myDT.strptime(patient.get("start_date"), '%d %B \'%y').date()
 
     dayDelt = (today - start_date).days
@@ -150,29 +143,29 @@ def getMyWeek():
 
 def toggleMedSched(PID):
     now = datetime.now().strftime("%H:%M %d/%m/%y")
-    if mongo.db.dataset.find_one({"Patient ID": PID}).get("stopped"):
-        mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"stopped": False}})
-        drug = mongo.db.dataset.find_one({"Patient ID": PID}).get("Drug")
-        days = mongo.db.dataset.find_one({"Patient ID": PID}).get("backup_days")
+    if db["dataset"].find_one({"Patient ID": PID}).get("stopped"):
+        db["dataset"].update_one({"Patient ID": PID}, {"$set": {"stopped": False}})
+        drug = db["dataset"].find_one({"Patient ID": PID}).get("Drug")
+        days = db["dataset"].find_one({"Patient ID": PID}).get("backup_days")
         drug["days"] = days
-        mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"Drug": drug}})
-        stopscheds = mongo.db.dataset.find_one({"Patient ID": PID}).get("stopscheds")
+        db["dataset"].update_one({"Patient ID": PID}, {"$set": {"Drug": drug}})
+        stopscheds = db["dataset"].find_one({"Patient ID": PID}).get("stopscheds")
         if stopscheds == None:
             stopscheds = []
         stopscheds.append({"datetime": now, "action": "Resumed Treatment"})
-        mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"stopscheds": stopscheds}})
+        db["dataset"].update_one({"Patient ID": PID}, {"$set": {"stopscheds": stopscheds}})
 
     else:
-        drug = mongo.db.dataset.find_one({"Patient ID": PID}).get("Drug")
-        mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"backup_days": drug["days"]}})
+        drug = db["dataset"].find_one({"Patient ID": PID}).get("Drug")
+        db["dataset"].update_one({"Patient ID": PID}, {"$set": {"backup_days": drug["days"]}})
         drug["days"] = []
-        mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"Drug": drug}})
-        mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"stopped": True}})
-        stopscheds = mongo.db.dataset.find_one({"Patient ID": PID}).get("stopscheds")
+        db["dataset"].update_one({"Patient ID": PID}, {"$set": {"Drug": drug}})
+        db["dataset"].update_one({"Patient ID": PID}, {"$set": {"stopped": True}})
+        stopscheds = db["dataset"].find_one({"Patient ID": PID}).get("stopscheds")
         if stopscheds == None:
             stopscheds = []
         stopscheds.append({"datetime": now, "action": "Stopped Treatment"})
-        mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"stopscheds": stopscheds}})
+        db["dataset"].update_one({"Patient ID": PID}, {"$set": {"stopscheds": stopscheds}})
 
 
 
@@ -200,7 +193,7 @@ def login():
         password = request.form.get("password")
 
         # Validate user
-        doctors = mongo.db.dataset.find({"type":"Doctor"})
+        doctors = db["dataset"].find({"type":"Doctor"})
         for i in doctors:
             if username==i["ID"] and str(hashlib.sha512(password.encode('utf-8')).hexdigest())==i["PassHash"]:
                 session.clear()
@@ -211,7 +204,7 @@ def login():
                 session["user"] = json.dumps(myUser)
                 return redirect(url_for("doctor_home"))
 
-        it = mongo.db.dataset.find({"type":"IT"})
+        it = db["dataset"].find({"type":"IT"})
         for i in it:
             if username==i["ID"] and str(hashlib.sha512(password.encode('utf-8')).hexdigest())==i["PassHash"]:
                 session.clear()
@@ -222,7 +215,7 @@ def login():
                 session["user"] = json.dumps(myUser)
                 return redirect(url_for("it_page"))
 
-        dataset = list(mongo.db.dataset.find())
+        dataset = list(db["dataset"].find())
         patients = [i for i in dataset if "Patient ID" in list(dict(i).keys())]
         for i in patients:
             mypass = str("".join(i["Contact"].split(" ")[1:])).strip()
@@ -255,16 +248,16 @@ def doctor_home():
     if json.loads(session.get("user")).get("category").lower() not in ["cardiologist", "resident"]:
         menu = "lowerMenu"
 
-    patients = mongo.db.dataset.find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients")
+    patients = db["dataset"].find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients")
     # print(patients)
     toRemovePatients = []
     myPatients = []
     for i in patients:
-        patient = mongo.db.dataset.find_one({"Patient ID":i})
+        patient = db["dataset"].find_one({"Patient ID":i})
         if patient == None:
             toRemovePatients.append(i)
             continue
-        caretakers = mongo.db.dataset.find({"type":"Doctor"})
+        caretakers = db["dataset"].find({"type":"Doctor"})
         caretaker = {"fullName":"Unassigned"}
         for j in caretakers:
             if (i in list(j.get("patients"))) and j.get("ID")!=json.loads(session.get("user")).get("ID"):
@@ -273,12 +266,12 @@ def doctor_home():
         patient.update({"caretaker":caretaker})
         print(patient["Patient ID"],patient["Name"])   
         myPatients.append(patient)
-    rawPatients = list(mongo.db.dataset.find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients"))
+    rawPatients = list(db["dataset"].find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients"))
     if len(toRemovePatients)>0:
         for i in toRemovePatients:
             rawPatients.remove(i)
         rawPatients = set(list(rawPatients))
-        mongo.db.dataset.update_one({"ID": json.loads(session.get("user")).get("ID")}, {"$set": {"patients":rawPatients}})
+        db["dataset"].update_one({"ID": json.loads(session.get("user")).get("ID")}, {"$set": {"patients":rawPatients}})
     return render_template("doctor/view_patients.html", menu=menu, user=json.loads(session.get("user")), patients=myPatients)
 
 @app.route("/doctor/table")
@@ -291,12 +284,12 @@ def doctor_table():
     if json.loads(session.get("user")).get("category").lower() not in ["cardiologist", "resident"]:
         menu = "lowerMenu"
 
-    patients = mongo.db.dataset.find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients")
+    patients = db["dataset"].find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients")
     myPatients = []
     for i in patients:
-        patient = mongo.db.dataset.find_one({"Patient ID":i})
+        patient = db["dataset"].find_one({"Patient ID":i})
         patient.pop("_id")
-        caretakers = mongo.db.dataset.find({"type":"Doctor"})
+        caretakers = db["dataset"].find({"type":"Doctor"})
         caretaker = {"fullName":"Unassigned"}
         for j in caretakers:
             if (i in list(j.get("patients"))) and j.get("ID")!=json.loads(session.get("user")).get("ID"):
@@ -319,7 +312,7 @@ def patient_reassign():
     
     if request.form.get("for"):
         session["reassign_for"] = request.form.get("for")
-        doctors = mongo.db.dataset.find({"type":"Doctor"})
+        doctors = db["dataset"].find({"type":"Doctor"})
         return render_template("doctor/view_avbl_doctors.html", menu=menu, doctors = doctors, user=json.loads(session.get("user")))
     if request.form.get("ID"):
         assignCaretaker(session.get("reassign_for"),request.form.get("ID"))
@@ -336,7 +329,7 @@ def patient_specific_view(id):
     if json.loads(session.get("user")).get("category").lower() not in ["cardiologist", "resident"]:
         menu = "lowerMenu"
 
-    patient = dict(mongo.db.dataset.find_one({"Patient ID":id}))
+    patient = dict(db["dataset"].find_one({"Patient ID":id}))
     dosages = patient["inr_levels"]
     now = dt.datetime.now()
     start_date = patient["start_date"]
@@ -454,7 +447,7 @@ def end_therapy(PID):
     if json.loads(session.get("user")).get("category").lower() not in ["cardiologist", "resident"]:
         menu = "lowerMenu"
 
-    patient = dict(mongo.db.dataset.find_one({"Patient ID":PID}))
+    patient = dict(db["dataset"].find_one({"Patient ID":PID}))
     Drug = patient.get("Drug")
     if request.method=="GET":
         rzn = "3 Months Passed since Therapy Started"
@@ -462,7 +455,7 @@ def end_therapy(PID):
         rzn = str(request.form.get("reason"))
     
     Drug["strength"] = 0
-    mongo.db.dataset.update_one({"Patient ID": PID}, {"$set": {"Drug": Drug, "StoppageReason": rzn}})
+    db["dataset"].update_one({"Patient ID": PID}, {"$set": {"Drug": Drug, "StoppageReason": rzn}})
 
     return redirect(url_for('patient_specific_view', id=PID))
 
@@ -480,7 +473,7 @@ def inr_level_reports(PID):
 
     return render_template("doctor/inr_uploads.html", menu=menu,
                     user=json.loads(session.get("user")),
-                    patient = dict(mongo.db.dataset.find_one({"Patient ID":PID})))
+                    patient = dict(db["dataset"].find_one({"Patient ID":PID})))
 
 @app.route('/doctor/inr_report/<filename>')
 def view_inr_filename(filename):
@@ -496,11 +489,11 @@ def historic_dosage_and_mis_dosage_view(id):
     if json.loads(session.get("user")).get("category").lower() not in ["cardiologist", "resident"]:
         menu = "lowerMenu"
 
-    Oid = str(dict(mongo.db.dataset.find_one({"Patient ID":id})).get("_id"))
+    Oid = str(dict(db["dataset"].find_one({"Patient ID":id})).get("_id"))
 
     return render_template("doctor/historic_dosage_and_mis_dosage_view.html", menu=menu,
                     user=json.loads(session.get("user")),
-                    patient = dict(mongo.db.dataset.find_one({"Patient ID":id})),
+                    patient = dict(db["dataset"].find_one({"Patient ID":id})),
                     missedDoses = listMissedDoses(Oid))
 
 @app.route("/doctor/assign-dosage/<id>", methods=["GET","POST"])
@@ -514,7 +507,7 @@ def assign_dosage(id):
         menu = "lowerMenu"
 
     if request.method=="GET":
-        patient = dict(mongo.db.dataset.find_one({"Patient ID":id}))
+        patient = dict(db["dataset"].find_one({"Patient ID":id}))
         dosages = patient["dosages"]
         now = dt.datetime.now()
         # Create an empty monthly dosage strength array
@@ -573,7 +566,7 @@ def assign_dosage(id):
                 SAT="SAT" in myDays ,
                 SUN="SUN" in myDays )
     else:
-        patient = dict(mongo.db.dataset.find_one({"Patient ID":id}))
+        patient = dict(db["dataset"].find_one({"Patient ID":id}))
         days = []
         def getbool(x):
             if x=="on":
@@ -594,7 +587,7 @@ def assign_dosage(id):
                 "afternoon": getbool(request.form.get("afternoon")),
                 "night": getbool(request.form.get("night")),
                 "days": days}
-        mongo.db.dataset.update_one({"Patient ID": id}, {"$set": {"Drug": Drug}})
+        db["dataset"].update_one({"Patient ID": id}, {"$set": {"Drug": Drug}})
         return redirect(url_for("patient_specific_view", id=id))
 
 @app.route("/doctor/schedules", methods=['GET','POST'])
@@ -609,15 +602,15 @@ def doctor_schedules():
     if request.method=='POST':
         date = (list(request.form.values())[0]).split("T")[0]
         time = (list(request.form.values())[0]).split("T")[-1]
-        mongo.db.dataset.update_one({"Patient ID": list(dict(request.form).keys())[0].split("-")[2]}, {"$set": {"next_test_date": f"{datetime.strptime(date , '%Y-%m-%d').strftime('%d-%b-%Y')} {time}"}})
+        db["dataset"].update_one({"Patient ID": list(dict(request.form).keys())[0].split("-")[2]}, {"$set": {"next_test_date": f"{datetime.strptime(date , '%Y-%m-%d').strftime('%d-%b-%Y')} {time}"}})
         return redirect(url_for("doctor_schedules"))
     else:
-        patients = mongo.db.dataset.find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients")
+        patients = db["dataset"].find_one({"ID": json.loads(session.get("user")).get("ID")}).get("patients")
         myPatients = []
         for i in patients:
-            patient = mongo.db.dataset.find_one({"Patient ID":i})
+            patient = db["dataset"].find_one({"Patient ID":i})
             patient.pop("_id")
-            caretakers = mongo.db.dataset.find({"type":"Doctor"})
+            caretakers = db["dataset"].find({"type":"Doctor"})
             caretaker = {"fullName":"Unassigned"}
             for j in caretakers:
                 if (i in list(j.get("patients"))) and j.get("ID")!=json.loads(session.get("user")).get("ID"):
@@ -640,7 +633,7 @@ def new_patient_creation():
     if request.method=='GET':
         return render_template("doctor/new_patient_creation.html", menu=menu, user=json.loads(session.get("user")))
     else:
-        dataset = mongo.db.dataset.find()
+        dataset = db["dataset"].find()
         patients = [i for i in dataset if "Patient ID" in list(dict(i).keys())]
         counter = 0
         for i in patients:
@@ -762,9 +755,9 @@ def patient_details():
     if json.loads(session.get("user")).get("category").lower() not in\
             ["cardiologist", "resident", "clinical pharmacist", "paramedical", "lab personnel"]:
         return redirect("/login")
-    return jsonify({"name": mongo.db.dataset.find_one({"Patient ID":request.args.get("patientCode")})["Name"],
-                    "age":  mongo.db.dataset.find_one({"Patient ID":request.args.get("patientCode")})["Age"],
-                    "gender":  mongo.db.dataset.find_one({"Patient ID":request.args.get("patientCode")})["Gender"]})
+    return jsonify({"name": db["dataset"].find_one({"Patient ID":request.args.get("patientCode")})["Name"],
+                    "age":  db["dataset"].find_one({"Patient ID":request.args.get("patientCode")})["Age"],
+                    "gender":  db["dataset"].find_one({"Patient ID":request.args.get("patientCode")})["Gender"]})
 
 @app.route("/it-personnel", methods=['POST','GET'])
 def it_page():
@@ -773,7 +766,7 @@ def it_page():
             ["it"]:
         return redirect("/login")
     if request.method=='GET':
-        users = mongo.db.dataset.find()
+        users = db["dataset"].find()
         myUsers = []
         for i in users:
             if i.get("type"):
@@ -789,12 +782,12 @@ def it_page():
         return render_template("it/it_page.html", users=myUsers)
     else:
         if request.form.get("todo") == "addDoctor":
-            patients = mongo.db.dataset.find({"type":"Doctor"})
+            patients = db["dataset"].find({"type":"Doctor"})
             counter = len(list(patients))+1
             addDoctor(request.form.get("categ"),f"DOC{counter:0>5}",request.form.get("name"),"password")
             return redirect(url_for("it_page"))
         elif request.form.get("todo") == "addIT":
-            patients = mongo.db.dataset.find({"type":"IT"})
+            patients = db["dataset"].find({"type":"IT"})
             counter = len(list(patients))+1
             addIT(f"IT{counter:0>5}",request.form.get("name"),"password")
             return redirect(url_for("it_page"))
@@ -886,7 +879,7 @@ def other_medication():
     if "patient" in session:
         if request.method=='POST':
             addPatientReport(json.loads(session.get("user"))["Patient ID"], "others", request.form.get("drug"))
-            pat = mongo.db.dataset.find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
+            pat = db["dataset"].find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
             pat.update({"patient":True})
             session.clear()
             session["logged_in"] = True
@@ -906,7 +899,7 @@ def lifestyle_changes():
     if "patient" in session:
         if request.method=='POST':
             addPatientReport(json.loads(session.get("user"))["Patient ID"], "lifestyle", request.form.get("drug"))
-            pat = mongo.db.dataset.find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
+            pat = db["dataset"].find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
             pat.update({"patient":True})
             session.clear()
             session["logged_in"] = True
@@ -927,7 +920,7 @@ def side_effects():
         if request.method=='POST':
             for i in list(dict(request.form).keys()):
                 addPatientReport(json.loads(session.get("user"))["Patient ID"], "side", i)
-            pat = mongo.db.dataset.find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
+            pat = db["dataset"].find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
             pat.update({"patient":True})
             session.clear()
             session["logged_in"] = True
@@ -947,7 +940,7 @@ def prolonged_illness():
     if "patient" in session:
         if request.method=='POST':
             addPatientReport(json.loads(session.get("user"))["Patient ID"], "prolonged", request.form.get("drug"))
-            pat = mongo.db.dataset.find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
+            pat = db["dataset"].find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
             pat.update({"patient":True})
             session.clear()
             session["logged_in"] = True
@@ -972,7 +965,7 @@ def take_dose():
             istchange = dt.timedelta(hours=5, minutes=30)
             dosedate = (dosedate - istchange).strftime("%Y-%m-%dT%H:%M:%SI")
             addDosage(json.loads(session.get("user"))["Patient ID"],json.loads(session.get("user"))["Drug"]["type"],strength,dosedate)
-            pat = mongo.db.dataset.find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
+            pat = db["dataset"].find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
             pat.update({"patient":True})
             session.clear()
             session["logged_in"] = True
@@ -1039,7 +1032,7 @@ def stop_meds():
     if "patient" in session:
         if request.method=='POST':
             toggleMedSched(json.loads(session.get("user"))["Patient ID"])
-            pat = mongo.db.dataset.find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
+            pat = db["dataset"].find_one({"Patient ID": json.loads(session.get("user"))["Patient ID"]})
             pat.update({"patient":True})
             session.clear()
             session["logged_in"] = True
@@ -1058,7 +1051,7 @@ def patient_profile():
     if "patient" not in session:
         return redirect("/login")
 
-    patient = dict(mongo.db.dataset.find_one({"Patient ID":json.loads(session.get("user"))["Patient ID"]}))
+    patient = dict(db["dataset"].find_one({"Patient ID":json.loads(session.get("user"))["Patient ID"]}))
     dosages = patient["dosages"]
     now = dt.datetime.now()
     # Create an empty monthly dosage strength array
@@ -1125,8 +1118,8 @@ def internal_server_error(e):
     return render_template('500.html', error=str(e)), 500
 
 if __name__ == "__main__":
-    # addDoctor("Cardiologist","DOC00001","Aaditya Rengarajan","password")
-    # addDoctor("Clinical Pharmacist","DOC00002","Subhasri Shreya S L","password")
+    addDoctor("Cardiologist","DOC00001","Aaditya Rengarajan","password")
+    addDoctor("Clinical Pharmacist","DOC00002","Subhasri Shreya S L","password")
     # dosages = [
     # {"datetime": "2023-01-15T08:00:00I", "drug": "Warfarin", "strength": "90", "remark": ""},
     # {"datetime": "2023-01-22T08:00:00I", "drug": "Warfarin", "strength": "92", "remark": ""},
