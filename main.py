@@ -124,7 +124,7 @@ async def login(response: Response, request: Request, username: str = Form(...),
         await backend.create(session, data)
         cookie.attach_to_response(response, session)
     
-        return '<meta http-equiv="refresh" content="0; url=/">'
+        return '<meta http-equiv="refresh" content="0; url=/admin">'
 
     elif "DOC" in username:
         user = collection.find_one({"ID":username, "type":"Doctor"})
@@ -138,7 +138,7 @@ async def login(response: Response, request: Request, username: str = Form(...),
             await backend.create(session, data)
             cookie.attach_to_response(response, session)
         
-            return '<meta http-equiv="refresh" content="0; url=/">'
+            return '<meta http-equiv="refresh" content="0; url=/doctor">'
         else:
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -177,7 +177,7 @@ async def login(response: Response, request: Request, username: str = Form(...),
             await backend.create(session, data)
             cookie.attach_to_response(response, session)
         
-            return '<meta http-equiv="refresh" content="0; url=/">'
+            return '<meta http-equiv="refresh" content="0; url=/patient">'
         else:
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
