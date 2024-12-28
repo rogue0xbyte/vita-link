@@ -1,0 +1,45 @@
+{% macro navBar(user, page, request) %}
+<link href="/static/css/menu.css" rel="stylesheet">
+<title>{{ page }} | Vita-Link INR Tracking Application</title>
+<div class="header">
+  <br/>
+  <center style="display:flex;justify-content: center;">
+      <img src="/static/img/imsr.png" style="height: 80px;">
+      &nbsp;&nbsp;&nbsp;&nbsp;<div style="border-left: 1px solid black; height: 50px; margin-top: 10px;"></div>&nbsp;&nbsp;
+      <img src="/static/img/psg.png" style="height: 46px;margin-top:17.5px">
+  </center>
+  <h2>Vita-Link</h2>
+  <div class="desktop-only flex" style="min-height: 5px;gap: 25px;justify-content: center; align-items: center;font-family: 'Roboto Mono', monospace;">
+    <p>Welcome, {{ user["fullName"] }}!</p>&nbsp;&nbsp;
+    <a href="/doctor">View Patients</a>
+    <a href="/doctor/reports?typ=today">View Reports</a>
+    <a href="/doctor/add-patient">Add Patient</a>
+    <a href="/logout">Log Out</a>
+  </div>
+  <p class="mobile-only" style="font-family: 'Roboto Mono', monospace;">@ {{ page }} Page</p>
+  <div class="mobile-only" style="min-height: 5px;">&nbsp;</div>
+  <div class="desktop-only" style="min-height: 2px;">&nbsp;</div>
+</div>
+<div class="hamburger-menu mobile-only" id="menu">
+  <br/>
+  <ul class="menu-options">
+    <li><a href="/doctor">View Patients</a></li>
+    <li><a href="/doctor/reports?typ=today">View Reports</a></li>
+    <li><a href="/doctor/add-patient">Add Patient</a></li>
+    <li><a href="/logout">Log Out</a></li>
+  </ul>
+  <div class="menu-footer">
+    <div>{{ user["fullName"] }}</div>
+    <div>{{ user["occupation"] }}</div>
+  </div>
+</div>
+<button onclick="toggleMenu()" class="hamburger-btn mobile-only">
+    ☰
+</button>
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  menu.classList.toggle('open');
+}
+</script>
+{% endmacro %}

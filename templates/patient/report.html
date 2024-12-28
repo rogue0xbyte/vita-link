@@ -1,0 +1,194 @@
+{% from 'patient/menu.html' import navBar %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.js"></script>
+  <link href="{{ url_for( 'static', path='css/doctor/add_patient.css' ) }}" rel="stylesheet">
+  <link href="{{ url_for( 'static', path='css/patient/report.css' ) }}" rel="stylesheet">
+</head>
+<body>
+  
+  {{ navBar(user=patient, page=page, request=request) }}
+ 
+  <div class="container">
+    <div class="card" style="background-color: rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); padding: 50px;">
+
+      <form id="form" action="/patient/report" method="POST">
+
+      {% if message=="sideEffects" %}
+
+      
+        <p>Check all that apply:</p>
+        <div>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46hmb" type="checkbox" name="side_effect" value="Heavy Menstrual Bleeding" />
+              <label class="cbx" for="cbx-46hmb"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Heavy Menstrual Bleeding</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46bbs" type="checkbox" name="side_effect" value="Black or Bloody Stool" />
+              <label class="cbx" for="cbx-46bbs"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Black or Bloody Stool</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46sh" type="checkbox" name="side_effect" value="Severe Headache" />
+              <label class="cbx" for="cbx-46sh"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Severe Headache</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46ssp" type="checkbox" name="side_effect" value="Severe Stomach Pain" />
+              <label class="cbx" for="cbx-46ssp"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Severe Stomach Pain</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46jpds" type="checkbox" name="side_effect" value="Joint Pain, Discomfort or Swelling" />
+              <label class="cbx" for="cbx-46jpds"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Joint Pain, Discomfort or Swelling</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46vb" type="checkbox" name="side_effect" value="Vomiting of Blood" />
+              <label class="cbx" for="cbx-46vb"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Vomiting of Blood</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46cub" type="checkbox" name="side_effect" value="Coughing up Blood" />
+              <label class="cbx" for="cbx-46cub"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Coughing up Blood</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46bwi" type="checkbox" name="side_effect" value="Bruising without Injury" />
+              <label class="cbx" for="cbx-46bwi"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Bruising without Injury</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46dow" type="checkbox" name="side_effect" value="Dizziness or Weakness" />
+              <label class="cbx" for="cbx-46dow"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Dizziness or Weakness</span>
+              </label>
+            </div>
+
+          </label><br>
+          <label>
+
+            <div class="checkbox-wrapper-46">
+              <input class="inp-cbx" id="cbx-46vc" type="checkbox" name="side_effect" value="Vision Changes" />
+              <label class="cbx" for="cbx-46vc"><span>
+                <svg width="12px" height="10px" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg></span><span>Vision Changes</span>
+              </label>
+            </div>
+
+          </label><br>
+        </div>
+
+        <p style="font-family: 'Roboto Mono',monospace;">Describe any other side effects you are experiencing</p><br/>
+        <textarea name="field" id="field" rows="5" cols="10"></textarea>
+
+      {% else %}
+
+        <p style="font-family: 'Roboto Mono',monospace;">{{message}}</p><br/>
+        <textarea name="field" id="field" rows="5" cols="10"></textarea>
+
+      {% endif %}
+
+      <input type="hidden" name="typ" value="{{type}}"/>
+
+        <button type="submit">Submit</button>
+
+      </form>
+
+      <script>
+        document.getElementById('form').addEventListener('submit', function (event) {
+          event.preventDefault();
+
+          // Collect checked side effects
+          const checkboxes = document.querySelectorAll('input[name="side_effect"]:checked');
+          const sideEffects = Array.from(checkboxes).map(checkbox => checkbox.value).join(', ');
+
+          // Get the additional input from the textarea
+          const fieldTextarea = document.getElementById('field');
+          const additionalInput = fieldTextarea.value;
+
+          // Combine side effects and additional input into "field"
+          const combinedInput = sideEffects + (sideEffects && additionalInput ? ', ' : '') + additionalInput;
+
+          // Update the textarea with combined input
+          fieldTextarea.value = combinedInput;
+
+          // Submit the form
+          this.submit();
+        });
+      </script>
+    </div>
+  </div>
+
+
+
+</body>
+</html>

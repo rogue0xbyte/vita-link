@@ -1,0 +1,162 @@
+{% from 'patient/menu.html' import navBar %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.js"></script>
+  <link href="{{ url_for( 'static', path='css/doctor/add_patient.css' ) }}" rel="stylesheet">
+</head>
+<body>
+  
+  {{ navBar(user=patient, page="My Profile", request=request) }}
+ 
+   <!-- <div class="card">{{patient}}</div> -->
+
+  <div class="container">
+    <div class="card" style="background-color: rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); padding: 50px;">
+
+      <h2>{{patient["name"]}} <span style="font-size: 65%;font-weight: normal;display: inline-block; white-space: nowrap;">(Age: {{patient["age"]}}, Gender: {{patient["gender"]}})</span></h2>
+
+      <hr/>
+
+      <h3>Target INR: <span style="border: 1px solid black; padding: 5px 5px 5px 5px;font-family: 'Roboto Mono', monospace;">{{ patient["target_inr_min"] }} - {{ patient["target_inr_max"] }}</span></h3>
+
+      <hr/>
+
+      <h3 style="text-align: center;">Latest INR: <span style="font-family: 'Roboto Mono', monospace;">{{patient["inr_reports"][-1]["inr_value"]}}</span><br/><span style="font-size: 65%;font-weight: normal;display: inline-block; white-space: nowrap;">AS OF {{patient["inr_reports"][-1]["date"].split("T")[-1]}}</span></h3>
+
+      <hr/>
+
+      <table style="margin: 0 auto;border-collapse: collapse;">
+        <tr>
+          <td style="text-align: left; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">Doctor</td>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{ patient["doctor"] }}</td>
+        </tr>
+        <tr>
+          <td style="text-align: left; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">Caregiver</td>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{ patient["caretakerName"] }}</td>
+        </tr>
+        <tr>
+          <td style="text-align: left; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">Therapy</td>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{ patient["therapy"] }}</td>
+        </tr>
+        <tr>
+          <td style="text-align: left; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">Therapy Start Date</td>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{ patient["therapy_start_date"] }}</td>
+        </tr>
+      </table>
+      <br/>
+      <table style="margin: 0 auto;border-collapse: collapse;">
+        <tr>
+          <td style="font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="2">
+            Medical History
+          </td>
+        </tr>
+        {% for i in patient["medical_history"] %}
+        <tr>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{i["diagnosis"]}}</td>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{i["duration_value"]}} {{i["duration_unit"]}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <hr/>
+
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <canvas id="inrChart" width="400" height="200"></canvas>
+      <script>
+          const ctx = document.getElementById('inrChart').getContext('2d');
+          const inrChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: {{ chart_data.keys() | list | tojson }},
+                  datasets: [{
+                      label: 'INR Values',
+                      data: {{ chart_data.values() | list | tojson }},
+                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                      borderColor: 'rgba(75, 192, 192, 1)',
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true
+                      }
+                  }
+              }
+          });
+      </script>
+
+      <p style="font-family: 'Roboto Mono', monospace;">MISSED DOSES: {% if missed_doses | length == 0 %} NONE {% else %}
+        <ul>
+          {% for i in missed_doses %}
+          <li>{{i}}</li>
+          {% endfor %}
+        </ul> {% endif %}
+      </p>
+
+      <hr/>
+
+      <table style="margin: 0 auto;border-collapse: collapse;">
+        <tr>
+          <td style="font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="2">
+            Prescription
+          </td>
+        </tr>
+        {% for i in patient["dosage_schedule"] %}
+        <tr>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{i["day"]}}</td>
+          <td style="font-weight: normal; font-size: 85%; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;">{{i["dosage"]}} mg</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <hr/>
+
+      <p style="font-family: 'Roboto Mono', monospace;">
+        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;">
+          SIDE EFFECTS: {{ ", ".join(patient.get("sideEffects", ["None"])) }}<br/>
+          LIFESTYLE CHANGES: {{ ", ".join(patient.get("lifestyleChanges", ["None"])) }}<br/>
+          OTHER MEDICATION: {{ ", ".join(patient.get("otherMedication", ["None"])) }}<br/>
+          PROLONGED ILLNESS: {{ ", ".join(patient.get("prolongedIllness", ["None"])) }}
+        </div>
+      </p>
+
+      <hr/>
+
+      <table style="margin: 0 auto;border-collapse: collapse;">
+        <tr>
+          <td style="font-size: 85%; font-weight: bold; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="3">
+            Contact
+          </td>
+          <td style="font-size: 85%; font-weight: normal; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="3">
+            <a href="tel:{{patient['contact'] | replace(' ','')}}">{{patient["contact"]}}</a>
+          </td>
+        </tr>
+        <tr>
+          <td style="font-size: 85%; font-weight: bold; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="1">
+            Kin Name
+          </td>
+          <td style="font-size: 85%; font-weight: normal; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="2">
+            {{patient["kin_name"]}}
+          </td>
+          <td style="font-size: 85%; font-weight: bold; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="1">
+            Kin Contact
+          </td>
+          <td style="font-size: 85%; font-weight: normal; padding: 2px 2px 2px 2px; border: 1px solid black;border-collapse: collapse;" colspan="2">
+            <a href="tel:{{patient['kin_contact'] | replace(' ','')}}">{{patient["kin_contact"]}}</a>
+          </td>
+        </tr>
+      </table>
+
+  </div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% from 'doctor/menu.html' import navBar %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.js"></script>
+  <link href="{{ url_for( 'static', path='css/doctor/view_patients.css' ) }}" rel="stylesheet">
+</head>
+<body>
+  
+  {{ navBar(user=user, page="INR Reports", request=request) }}
+
+  <div class="container table-responsive" id="table" style="max-width: 95vw;">
+    <table id="datatable" class="display responsive nowrap">
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Date & Time</th>
+          <th>INR Level</th>
+          <th>Lab Name</th>
+          <th>View Report</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+        <tr>
+          <td>{{ report["patient_name"] }}</td>
+          <td>{{ report["inr_report"]["date"] }}</td> 
+          <td>{{ report["inr_report"]["inr_value"] }}</td> 
+          <td>{{ report["inr_report"]["location_of_test"] }}</td> 
+          <td><a href='/{{ report["inr_report"]["file_path"] }}'>View Report</a></td>          
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('#datatable').DataTable({
+        responsive: true, destroy: true
+      });    });
+  </script>
+
+</body>
+</html>

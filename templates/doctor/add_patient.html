@@ -1,0 +1,309 @@
+{% from 'doctor/menu.html' import navBar %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{{ url_for( 'static', path='css/doctor/add_patient.css' ) }}" rel="stylesheet">
+</head>
+<body>
+  
+  {{ navBar(user=user, page="Add Patient", request=request) }}
+
+  <div class="container">
+    <div class="card" style="background-color: rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); padding: 50px;">
+      <form id="patientForm" method="POST" action="/">
+        <!-- Name -->
+        <div>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <!-- Age -->
+        <div>
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" required min="1" max="120" oninput="validateInput(this)" />
+        </div>
+
+        <!-- Gender -->
+        <div>
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender" required>
+            <option value="">Select</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="O">Other</option>
+          </select>
+        </div>
+
+        <!-- Target INR -->
+        <div class="form-row">
+          <div>
+            <label for="targetInrMin">Target INR Min</label>
+            <input type="number" id="targetInrMin" name="targetInrMin" required step="0.01" oninput="validateTargetINR()" />
+          </div>
+          <div>
+            <label for="targetInrMax">Target INR Max</label>
+            <input type="number" id="targetInrMax" name="targetInrMax" required step="0.01" oninput="validateTargetINR()" />
+          </div>
+        </div>
+
+        <!-- Doctor and Caregiver -->
+        <div>
+          <label>Doctor</label>
+          <input type="text" value="{{user['fullName']}}" readonly />
+        </div>
+        <div>
+          <label>Caregiver</label>
+          <input type="text" value="Not Assigned" readonly />
+        </div>
+
+        <!-- Therapy -->
+        <div>
+          <label for="therapy">Therapy</label>
+          <select id="therapy" name="therapy" required>
+            <option value="">Select</option>
+            <option value="Warfarin">Warfarin</option>
+            <option value="Acitrom">Acitrom</option>
+          </select>
+        </div>
+
+        <!-- Medical History -->
+        <div id="medicalHistory">
+          <h3>Medical History</h3>
+          <div class="medical-history-item">
+            <button type="button" class="remove-history" onclick="removeHistoryItem(this)">×</button>
+            <label for="diagnosis">Diagnosis</label>
+            <textarea name="diagnosis" required></textarea>
+            <label for="duration">Duration</label>
+            <div class="flex-input">
+              <input type="number" name="durationValue" required />
+              <select name="durationUnit">
+                <option value="days">Days</option>
+                <option value="months">Months</option>
+                <option value="years">Years</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="add-history" onclick="addHistoryItem()">+ Add Medical History</button>
+
+        <!-- Therapy Start Date -->
+        <div>
+          <label for="therapyStartDate">Therapy Start Date</label>
+          <input type="date" id="therapyStartDate" name="therapyStartDate" value="2024-12-28" required />
+        </div>
+
+        <div>
+            <label for="prescription">Prescription</label>
+            <div class="checkbox-days">
+              <label parent="true" style="display: table-row">
+                <div class="checkbox-wrapper-58" style="display:table-cell; align-content: center;padding-top: 5px!important" class="tableCell">
+                  <label class="switch">
+                    <input type="checkbox" name="days[]" value="MON">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+               
+               <p style="display: table-cell">Mon</p>
+               
+               <input type="number" step="1" min="0" style="display: table-cell;" max="100" placeholder="mg" name="dosage-Mon" />
+              </label>
+              
+              <label parent="true" style="display: table-row">
+                <div class="checkbox-wrapper-58" style="display:table-cell; align-content: center;padding-top: 5px!important" class="tableCell">
+                  <label class="switch">
+                    <input type="checkbox" name="days[]" value="TUE">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+               
+               <p style="display: table-cell">Tue</p>
+               
+               <input type="number" step="1" min="0" style="display: table-cell;" max="100" placeholder="mg" name="dosage-Tue" />
+              </label>
+              
+              <label parent="true" style="display: table-row">
+                <div class="checkbox-wrapper-58" style="display:table-cell; align-content: center;padding-top: 5px!important" class="tableCell">
+                  <label class="switch">
+                    <input type="checkbox" name="days[]" value="WED">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+               
+               <p style="display: table-cell">Wed</p>
+               
+               <input type="number" step="1" min="0" style="display: table-cell;" max="100" placeholder="mg" name="dosage-Wed" />
+              </label>
+              
+              <label parent="true" style="display: table-row">
+                <div class="checkbox-wrapper-58" style="display:table-cell; align-content: center;padding-top: 5px!important" class="tableCell">
+                  <label class="switch">
+                    <input type="checkbox" name="days[]" value="THU">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+               
+               <p style="display: table-cell">Thu</p>
+               
+               <input type="number" step="1" min="0" style="display: table-cell;" max="100" placeholder="mg" name="dosage-Thu" />
+              </label>
+              
+              <label parent="true" style="display: table-row">
+                <div class="checkbox-wrapper-58" style="display:table-cell; align-content: center;padding-top: 5px!important" class="tableCell">
+                  <label class="switch">
+                    <input type="checkbox" name="days[]" value="FRI">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+               
+               <p style="display: table-cell">Fri</p>
+               
+               <input type="number" step="1" min="0" style="display: table-cell;" max="100" placeholder="mg" name="dosage-Fri" />
+              </label>
+              
+              <label parent="true" style="display: table-row">
+                <div class="checkbox-wrapper-58" style="display:table-cell; align-content: center;padding-top: 5px!important" class="tableCell">
+                  <label class="switch">
+                    <input type="checkbox" name="days[]" value="SAT">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+               
+               <p style="display: table-cell">Sat</p>
+               
+               <input type="number" step="1" min="0" style="display: table-cell;" max="100" placeholder="mg" name="dosage-Sat" />
+              </label>
+              
+              <label parent="true" style="display: table-row">
+                <div class="checkbox-wrapper-58" style="display:table-cell; align-content: center;padding-top: 5px!important" class="tableCell">
+                  <label class="switch">
+                    <input type="checkbox" name="days[]" value="SUN">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+               
+               <p style="display: table-cell">Sun</p>
+               
+               <input type="number" step="1" min="0" style="display: table-cell;" max="100" placeholder="mg" name="dosage-Sun" />
+              </label>
+            </div>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <label for="contact">Contact</label>
+          <input type="text" id="contact" name="contact" required pattern="^\+91\s?(\d\s?){10}$" oninput="formatContact(this)" />
+        </div>
+
+        <!-- Kin -->
+        <div class="form-row">
+          <div>
+            <label for="kinName">Kin Name</label>
+            <input type="text" id="kinName" name="kinName" required pattern="^[a-zA-Z ]{2,}$" />
+          </div>
+          <div>
+            <label for="kinContact">Kin Contact</label>
+            <input type="text" id="kinContact" name="kinContact" required pattern="^\+91\s?(\d\s?){10}$" oninput="formatContact(this)" />
+          </div>
+        </div>
+
+        <button type="submit">Add Patient</button>
+      </form>
+    </div>
+  </div>
+
+<script>
+  function validateInput(input) {
+    input.setCustomValidity(input.checkValidity() ? '' : 'Invalid input!');
+  }
+
+  function validateTargetINR() {
+    const min = parseFloat(document.getElementById('targetInrMin').value);
+    const max = parseFloat(document.getElementById('targetInrMax').value);
+    if (min >= max) {
+      alert('Target INR Min must be less than Max.');
+    }
+  }
+
+  function addHistoryItem() {
+    const template = document.querySelector('.medical-history-item');
+    const clone = template.cloneNode(true);
+    clone.querySelector('.remove-history').style.display = 'block';
+    document.getElementById('medicalHistory').appendChild(clone);
+  }
+
+  function removeHistoryItem(button) {
+    button.parentElement.remove();
+  }
+
+  function formatContact(input) {
+    input.value = input.value.replace(/^(\+91)(\d{5})(\d{5})$/, '$1 $2 $3');
+  }
+
+  document.getElementById("patientForm").addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Form data extraction
+      const formData = new FormData(event.target);
+      const medicalHistoryElements = document.querySelectorAll(".medical-history-item");
+      const dosageScheduleElements = document.querySelectorAll(".checkbox-days label[parent='true']");
+
+      // Construct medicalHistory array
+      const medicalHistory = Array.from(medicalHistoryElements).map(item => ({
+          diagnosis: item.querySelector("textarea[name='diagnosis']").value,
+          duration_value: parseInt(item.querySelector("input[name='durationValue']").value, 10),
+          duration_unit: item.querySelector("select[name='durationUnit']").value,
+      }));
+
+      // Construct dosageSchedule array
+      const dosageSchedule = Array.from(dosageScheduleElements).map(label => ({
+          day: label.querySelector("input[type='checkbox']").value,
+          dosage: label.querySelector("input[type='number']").value || null,
+      }));
+
+      // Construct JSON data
+      const patientData = {
+          name: formData.get("name"),
+          age: parseInt(formData.get("age"), 10),
+          gender: formData.get("gender"),
+          target_inr_min: parseFloat(formData.get("targetInrMin")),
+          target_inr_max: parseFloat(formData.get("targetInrMax")),
+          therapy: formData.get("therapy"),
+          medical_history: medicalHistory,
+          therapy_start_date: formData.get("therapyStartDate"),
+          dosage_schedule: dosageSchedule.filter(item => item.dosage !== null), // Include only selected days
+          contact: formData.get("contact"),
+          kin_name: formData.get("kinName"),
+          kin_contact: formData.get("kinContact"),
+      };
+
+      try {
+          // Submit JSON to FastAPI
+          const response = await fetch("/doctor/add-patient/", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(patientData),
+          });
+
+          if (response.ok) {
+              const result = await response.json();
+              alert("Patient added successfully: " + result.id);
+              window.location.href = "/"; // Redirect to success page after successful submission
+          } else {
+              const error = await response.json();
+              alert("Error: " + error.detail);
+          }
+      } catch (error) {
+          alert("Network error: " + error.message);
+      }
+  });
+
+
+</script>
+
+</body>
+</html>

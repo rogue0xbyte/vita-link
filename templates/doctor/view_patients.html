@@ -1,108 +1,182 @@
-{% from 'macros.html' import navBar %}
+{% from 'doctor/menu.html' import navBar %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=0.9">
-    <title>Main page</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='styles/doctor/main.css')}}">
-    <!-- <link rel="stylesheet" href="main.css"> -->
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/v/dt/dt-2.1.8/r-3.0.3/datatables.min.js"></script>
+  <link href="{{ url_for( 'static', path='css/doctor/view_patients.css' ) }}" rel="stylesheet">
 </head>
 <body>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> 
+  
+  {{ navBar(user=user, page="View Patients", request=request) }}
 
-    <!-- Uses a transparent header that draws on top of the layout's background -->
-    <style>
-    .demo-layout-transparent {
-        height: 100vh!important;
-    }
-    .demo-layout-transparent .mdl-layout__header,
-    .demo-layout-transparent .mdl-layout__drawer-button {
-      /* This background is dark, so we set text to white. Use 87% black instead if
-         your background is light. */
-      color: grey;
-      position: sticky!important;
-      top: 0!important;
-    }
-    .mdl-layout__drawer.is-visible {
-        position: fixed;
-    }
-    .mdl-layout__obfuscator.is-visible {
-        position: fixed;
-    }
-    </style>
-    
-    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
-      {{ navBar(user, menu) }}
+  <div class="container">
+    <div class="card no-hover">
+      <div class="card-header" style="font-weight: normal;font-family: 'Roboto Mono', monospace;text-align: center;">
+        <p class="desktop-only">Viewing {{patients | length}} Patients<br/></p>
+        <button class="toggle-button" onclick="
+            const divA = document.getElementById('cards');
+            const divB = document.getElementById('table');
+            if (divA.style.display === 'none') {
+              divA.style.display = 'block';
+              divB.style.display = 'none';
+              this.textContent = 'Table View';
+            } else {
+              divA.style.display = 'none';
+              divB.style.display = 'block';
+              this.textContent = 'Cards View';
+            }
+          ">
+          Table View
+        </button></div>
     </div>
+  </div>
 
-    <div class="search-box" style="font-family: Arial;">
-        <a href="{{url_for('doctor_table')}}" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Table-View</a>
+  <div class="container" id="cards">
+    {% for patient in patients %}
+    <div class="card" onclick="toggleCard(this)">
+      <div class="card-header">{{patient["name"]}}</div>
+      <div class="card-details">Age: {{patient["age"]}}, Gender: {{patient["gender"]}}</div>
+      <div class="card-actions">
+        <button class="btn btn-secondary" id="reassign-doctor-btn" pat="{{patient['ID']}}">Reassign Doctor</button>
+        <button class="btn btn-secondary" id="reassign-caretaker-btn" pat="{{patient['ID']}}">Reassign Caretaker</button>
+        <a href="/doctor/view-patient/{{patient['ID']}}"><button class="btn btn-primary">View Patient</button></a>
+      </div>
     </div>
+    {% endfor %}
+  </div>
 
-    <main style="font-family: arial; padding-left: 25px;">
+  <div class="container table-responsive" id="table" style="max-width: 95vw;">
+    <table id="datatable" class="display responsive nowrap">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Doctor Name</th>
+          <th>Caretaker Name</th>
+          <th>View Patient</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for patient in patients %}
-        <div class="profile" onclick="expand(this)" style="width: 80vw; margin: 0 auto;">
-            <div class="profile__banner" style="align-items: center; background-color: rgb(134, 154, 255);">
-                <div class="profile__info">
-                    <span class="profile__info-display">{{patient["Name"]}} ({{patient["Gender"]}})</span>
-                    <span class="alert__status" style="padding-top:5px;height: auto!important;">
-                        (PID: {{patient['Patient ID']}})
-                    </span>
-                </div>
-            </div>
-            <div class="profile__data" style="padding:10px">
-                <span class="profile__data-following">
-                    <span class="Age-number">{{patient["Age"]}}</span>
-                    <span class="Age-label">Age</span>
-                </span>
-                <span class="profile__data-followers">
-                    <span class="doctor-name">{{user["fullName"]}}</span>
-                    <span class="doctor-label">Doctor</span>
-                </span>
-                <span class="profile__data-likes">
-                    <span class="caretaker-name">{{patient["caretaker"]["fullName"]}}</span>
-                    <span class="caretaker-label">Caretaker</span>
-                </span>
-                <form action="{{url_for('patient_reassign')}}" method='POST'>
-                    <input type="hidden" name="for" value="{{patient.get('Patient ID')}}"/>
-                    <button type="submit" class="mdl-chip">
-                        <span class="mdl-chip__text">Reassign</span>
-                    </button>
-                </form>
-            </div>
-            <a href="{{url_for('patient_specific_view',id=patient['Patient ID'])}}" style="padding-left: 32.5%;">
-                            <button type="button" class="mdl-chip">
-                                <span class="mdl-chip__text">View Patient</span>
-                            </button>
-                        </a>
-        </div>
-        <br/><br/>
+        <tr>
+          <td>{{patient["name"]}}</td>
+          <td>{{patient["age"]}}</td>
+          <td>{{patient["gender"]}}</td>
+          <td>{{user["fullName"]}}</td>
+          <td>{{patient["caretakerName"]}}</td>
+          <td><a href="/doctor/view-patient/{{patient['ID']}}">Click to View Patient</a></td>
+        </tr>
         {% endfor %}
-    </main>
-    <script>
-        function expand(card) {
-            card.classList.toggle('profile--expanded');
+      </tbody>
+    </table>
+  </div>
 
-            // If card is not expanded after toggle, add 'unexpanded' class
-            if (!card.classList.contains('profile--expanded')) card.classList.toggle('profile--unexpanded');
-            // Else if card is expanded after toggle and still contains 'unexpanded' class, remove 'unexpanded'
-            else if (card.classList.contains('profile--expanded') && card.classList.contains('profile--unexpanded')) card.classList.toggle('profile--unexpanded');
+  <script>
+    $(document).ready(function() {
+      $('#datatable').DataTable({
+        responsive: true, destroy: true
+      });
+      $('#table').hide();
+    });
+  </script>
+
+  <script>
+    function toggleCard(card) {
+      card.classList.toggle('expanded');
+    }
+  </script>
+
+  <div id="reassign-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close-btn" id="close-modal">&times;</span>
+      <h2 id="modal-title">Reassign</h2>
+      <select id="dropdown" class="dropdown">
+        <option value="" disabled selected>Select a person</option>
+      </select>
+      <button id="confirm-btn" class="btn btn-primary">Confirm</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const modal = document.getElementById("reassign-modal");
+      const dropdown = document.getElementById("dropdown");
+      const modalTitle = document.getElementById("modal-title");
+      const confirmBtn = document.getElementById("confirm-btn");
+
+      let currentType = "";
+      var patientId = "123";
+
+      const fetchList = (type) => {
+        const url = "/doctor/list-api";
+        return fetch(url)
+          .then((response) => response.json())
+          .then((data) => data)
+          .catch((error) => {
+            console.error("Error fetching list:", error);
+            return [];
+          });
+      };
+
+      const populateDropdown = async (type, patID) => {
+        dropdown.innerHTML = `<option value="" disabled selected>Select a person</option>`;
+        dropdown.setAttribute("type", type);
+        dropdown.setAttribute("patID", patID);
+        const list = await fetchList(type);
+        list.forEach(({ fullName, ID }) => {
+          const option = document.createElement("option");
+          option.value = ID;
+          option.textContent = fullName;
+          dropdown.appendChild(option);
+        });
+      };
+
+      const showModal = (type, patID) => {
+        currentType = type;
+        modal.style.display = "block";
+        modalTitle.textContent = `Reassign ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        populateDropdown(type, patID);
+      };
+
+      const reassign = () => {
+        const selectedId = dropdown.value;
+        if (!selectedId) {
+          alert("Please select a person!");
+          return;
         }
 
-        function toggleTheme() {
-            let docu = document.querySelector('html');
+        const url = `/doctor/reassign/${dropdown.getAttribute("patID")}?doc=${selectedId}&typ=${dropdown.getAttribute("type")}`;
 
-            docu.classList.toggle('light-theme');
-            docu.classList.toggle('dark-theme');
-        }
-    </script>
-    
+        fetch(url, { method: "POST" })
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to reassign");
+            alert(`${currentType.charAt(0).toUpperCase() + currentType.slice(1)} reassigned successfully!`);
+            location.reload();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Error reassigning!");
+          });
+      };
+
+      // Event Listeners
+      document.getElementById("reassign-doctor-btn").addEventListener("click", (event) => { const patientId = event.target.getAttribute("pat"); showModal("doctor", patientId); });
+      document.getElementById("reassign-caretaker-btn").addEventListener("click", (event) => { const patientId = event.target.getAttribute("pat"); showModal("caretaker", patientId); });
+      document.getElementById("close-modal").addEventListener("click", () => (modal.style.display = "none"));
+      confirmBtn.addEventListener("click", reassign);
 
 
+      // Close modal when clicking outside
+      window.addEventListener("click", (event) => {
+        if (event.target === modal) modal.style.display = "none";
+      });
+    });
+  </script>
 </body>
 </html>

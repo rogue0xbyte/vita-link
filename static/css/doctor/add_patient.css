@@ -1,0 +1,222 @@
+:root {
+  --primary-color: #648FFF;
+  --secondary-color: #785EF0;
+  --accent-color: #DC267F;
+  --warning-color: #FE6100;
+  --info-color: #FFB000;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;  
+  background: rgb(167,181,255);
+  background: -moz-linear-gradient(48deg, rgba(167,181,255,1) 0%, rgba(250,183,197,1) 100%);
+  background: -webkit-linear-gradient(48deg, rgba(167,181,255,1) 0%, rgba(250,183,197,1) 100%);
+  background: linear-gradient(48deg, rgba(167,181,255,1) 0%, rgba(250,183,197,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#a7b5ff",endColorstr="#fab7c5",GradientType=1);  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#648fff",endColorstr="#dc267f",GradientType=1);
+  background-size: cover;
+  background-attachment: fixed; /* Fix the background */
+  background-repeat: no-repeat; /* Prevent repeating */
+}
+
+.container {
+  padding: 1rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .card {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+form {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  gap: 15px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.form-row > div {
+  flex: 1;
+  min-width: 250px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.medical-history-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.remove-history {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+}
+
+.add-history, button[type='submit'], .add-med {
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.checkbox-days {
+  display: table;
+  margin: 0 auto;
+  border-spacing: 2vw;
+  border-collapse: separate;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkbox-days label {
+  display: flex;
+  gap: 5px;
+}
+
+
+.flex-input {
+  display: flex;
+  gap: 5px;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-row > div {
+    min-width: 100%;
+  }
+}
+
+.checkbox-wrapper-58 input[type="checkbox"] {
+  visibility: hidden;
+  display: none;
+}
+
+.checkbox-wrapper-58 *,
+.checkbox-wrapper-58 ::after,
+.checkbox-wrapper-58 ::before {
+  box-sizing: border-box;
+}
+
+/* The switch - the box around the slider */
+.checkbox-wrapper-58 .switch {
+  /* Variables */
+  --switch_width: 2em;
+  --switch_height: 1em;
+  --thumb_color: #e8e8e8;
+  --track_color: #e8e8e8;
+  --track_active_color: #888;
+  --outline_color: #000;
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: var(--switch_width);
+  height: var(--switch_height);
+}
+
+/* The slider */
+.checkbox-wrapper-58 .slider {
+  box-sizing: border-box;
+  border: 2px solid var(--outline_color);
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--track_color);
+  transition: .15s;
+  border-radius: var(--switch_height);
+}
+
+.checkbox-wrapper-58 .slider:before {
+  box-sizing: border-box;
+  position: absolute;
+  content: "";
+  height: var(--switch_height);
+  width: var(--switch_height);
+  border: 2px solid var(--outline_color);
+  border-radius: 100%;
+  left: -2px;
+  bottom: -2px;
+  background-color: var(--thumb_color);
+  transform: translateY(-0.2em);
+  box-shadow: 0 0.2em 0 var(--outline_color);
+  transition: .15s;
+}
+
+.checkbox-wrapper-58 input:checked + .slider {
+  background-color: var(--track_active_color);
+}
+
+.checkbox-wrapper-58 input:focus-visible + .slider {
+  box-shadow: 0 0 0 2px var(--track_active_color);
+}
+
+/* Raise thumb when hovered */
+.checkbox-wrapper-58 input:hover + .slider:before {
+  transform: translateY(-0.3em);
+  box-shadow: 0 0.3em 0 var(--outline_color);
+}
+
+.checkbox-wrapper-58 input:checked + .slider:before {
+  transform: translateX(calc(var(--switch_width) - var(--switch_height))) translateY(-0.2em);
+}
+
+/* Raise thumb when hovered & checked */
+.checkbox-wrapper-58 input:hover:checked + .slider:before {
+  transform: translateX(calc(var(--switch_width) - var(--switch_height))) translateY(-0.3em);
+  box-shadow: 0 0.3em 0 var(--outline_color);
+}
+
+input {
+  font-family: 'Roboto Mono', monospace;
+}

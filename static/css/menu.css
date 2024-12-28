@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  background-color: white;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  min-height: 10vh;
+  text-align: center;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+}
+
+.mobile-only {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+}
+
+.desktop-only {
+  display: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .desktop-only {
+    display: block;
+  }
+
+  .flex {
+    display: flex;
+  }
+}
+
+
+.hamburger-btn {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 10px 10px 10px 10px;
+  border-radius: 50%;
+  background: rgb(220,38,127);
+  background: -moz-radial-gradient(circle, rgba(220,38,127,1) 0%, rgba(254,97,0,1) 78%, rgba(255,176,0,1) 100%);
+  background: -webkit-radial-gradient(circle, rgba(220,38,127,1) 0%, rgba(254,97,0,1) 78%, rgba(255,176,0,1) 100%);
+  background: radial-gradient(circle, rgba(220,38,127,1) 0%, rgba(254,97,0,1) 78%, rgba(255,176,0,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#dc267f",endColorstr="#ffb000",GradientType=1);
+  border: none;
+  color: white;
+  text-shadow: 2px 2px 5px white;
+  box-shadow: 5px 5px 2px white;
+}
+
+.hamburger-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 9;
+}
+
+.hamburger-menu.open {
+  transform: translateX(0);
+}
+
+.menu-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-options li {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.menu-options li:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.menu-footer {
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}

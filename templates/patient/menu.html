@@ -1,0 +1,53 @@
+{% macro navBar(user, page, request) %}
+<link href="/static/css/menu.css" rel="stylesheet">
+<title>{{ page }} | Vita-Link INR Tracking Application</title>
+<div class="header">
+  <br/>
+  <center style="display:flex;justify-content: center;">
+      <img src="/static/img/imsr.png" style="height: 80px;">
+      &nbsp;&nbsp;&nbsp;&nbsp;<div style="border-left: 1px solid black; height: 50px; margin-top: 10px;"></div>&nbsp;&nbsp;
+      <img src="/static/img/psg.png" style="height: 46px;margin-top:17.5px">
+  </center>
+  <h2>Vita-Link</h2>
+  <div class="desktop-only flex" style="min-height: 5px;gap: 25px;justify-content: center; align-items: center;font-family: 'Roboto Mono', monospace;">
+    <p>Welcome, {{ user["name"] }}!</p>&nbsp;&nbsp;
+    <a href="/patient">My Profile</a>
+    <a href="/patient/update-inr">Update INR</a>
+    <a href="/patient/take-dose">Take Dosage</a>
+    <a href="/patient/report?type=sideEffects">Report Side Effects</a>
+    <a href="/patient/report?type=lifestyleChanges">Report Lifestyle Changes</a>
+    <a href="/patient/report?type=otherMedication">Report Other Medication</a>
+    <a href="/patient/report?type=prolongedIllness">Report Prolonged Illness</a>
+    <a href="/logout">Log Out</a>
+  </div>
+  <p class="mobile-only" style="font-family: 'Roboto Mono', monospace;">@ {{ page }} Page</p>
+  <div class="mobile-only" style="min-height: 5px;">&nbsp;</div>
+  <div class="desktop-only" style="min-height: 2px;">&nbsp;</div>
+</div>
+<div class="hamburger-menu mobile-only" id="menu">
+  <br/>
+  <ul class="menu-options">
+    <li><a href="/patient">My Profile</a></li>
+    <li><a href="/patient/update-inr">Update INR</a></li>
+    <li><a href="/patient/take-dose">Take Dosage</a></li>
+    <li><a href="/patient/report?type=sideEffects">Report Side Effects</a></li>
+    <li><a href="/patient/report?type=lifestyleChanges">Report Lifestyle Changes</a></li>
+    <li><a href="/patient/report?type=otherMedication">Report Other Medication</a></li>
+    <li><a href="/patient/report?type=prolongedIllness">Report Prolonged Illness</a></li>
+    <li><a href="/logout">Log Out</a></li>
+  </ul>
+  <div class="menu-footer">
+    <div>{{ user["name"] }}</div>
+    <div>{{ user["therapy"] }} Therapy</div>
+  </div>
+</div>
+<button onclick="toggleMenu()" class="hamburger-btn mobile-only">
+    ☰
+</button>
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  menu.classList.toggle('open');
+}
+</script>
+{% endmacro %}
