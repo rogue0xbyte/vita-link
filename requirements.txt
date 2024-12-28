@@ -1,10 +1,10 @@
 fastapi
 pymongo
 jinja2
-bson
 pydantic
 fastapi_sessions
 uvicorn
 pytz
 python-multipart
 aiofiles
+email-validator

@@ -103,25 +103,10 @@ db = client.get_database("testdb")  # replace with your database name
 collection = db.get_collection("items")
 
 
-@app.get("/", response_class=HTMLResponse, dependencies=[Depends(cookie)])
-async def read_root(request: Request, session_data: SessionData = Depends(role_verifier("*"))):
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
     """Redirect based on login status and role."""
-    user = session_data.data
-    
-    if user:
-        # If user is logged in, redirect based on their role
-        role = user.get("role")
-        if role == "admin":
-            return RedirectResponse(url="/admin", status_code=302)
-        elif role == "doctor":
-            return RedirectResponse(url="/doctor", status_code=302)
-        elif role == "patient":
-            return RedirectResponse(url="/patient", status_code=302)
-        else:
-            return RedirectResponse(url="/login", status_code=302)  # If role is unknown, redirect to login
-    else:
-        # If user is not logged in, redirect to the login page
-        return RedirectResponse(url="/login", status_code=302)
+    return RedirectResponse(url="/login", status_code=302)
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -198,22 +183,6 @@ async def login(response: Response, request: Request, username: str = Form(...),
 
     else:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-
-@app.get("/whoami", dependencies=[Depends(cookie)])
-async def whoami(session_data: SessionData = Depends(role_verifier("*"))):
-    return session_data
-
-@app.get("/create_session/{name}")
-async def create_session(name: str, response: Response):
-
-    session = uuid4()
-    data = SessionData(data={"name":name})
-
-    await backend.create(session, data)
-    cookie.attach_to_response(response, session)
-
-    return f"created session for {name}"
-
 
 @app.get("/logout")
 async def logout(response: Response, request: Request, session_id: UUID = Depends(cookie)):
